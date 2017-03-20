@@ -31,7 +31,7 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
 
   private final ReactApplicationContext reactContext;
 
-  private static final boolean DEBUG_MODE = true;
+  private static final boolean DEBUG_MODE = false;
 
   private static final String TAG = RNSqlite2Module.class.getSimpleName();
 

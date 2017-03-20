@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define logDebug NSLog
+#define logDebug
 
 @interface RNSqlite2 : NSObject <RCTBridgeModule>
 
