@@ -14,8 +14,7 @@
   "author": "Takuya Matsuyama <nora@odoruinu.net>",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "react-native": "^0.41.2",
-    "react-native-windows": "0.41.0-rc.1"
+    "react-native": "^0.41.2"
   },
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
