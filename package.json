@@ -3,6 +3,13 @@
   "version": "1.0.2",
   "description": "SQLite Storage for React Native",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/noradaiko/react-native-sqlite-2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/noradaiko/react-native-sqlite-2/issues"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,7 +23,6 @@
     "react-native": "^0.41.2"
   },
   "dependencies": {
-    "lodash.clonedeep": "^4.5.0",
     "lodash.map": "^4.6.0",
     "lodash.zipobject": "^4.1.3",
     "websql": "^0.4.4"

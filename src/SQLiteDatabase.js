@@ -1,7 +1,6 @@
 import map from 'lodash.map';
 import SQLiteResult from './SQLiteResult';
 import zipObject from 'lodash.zipobject';
-import cloneDeep from 'lodash.clonedeep'
 import { NativeModules, Platform } from 'react-native';
 const { RNSqlite2 } = NativeModules;
 
