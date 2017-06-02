@@ -74,6 +74,20 @@ db.transaction(function (txn) {
 });
 ```
 
+### Using with PouchDB
+
+It can be used with [pouchdb-adapter-react-native-sqlite](https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite).
+
+```javascript
+import PouchDB from 'pouchdb-react-native'
+import SQLite from 'react-native-sqlite-2'
+import SQLiteAdapterFactory from 'pouchdb-adapter-react-native-sqlite'
+
+const SQLiteAdapter = SQLiteAdapterFactory(SQLite)
+PouchDB.plugin(SQLiteAdapter)
+var db = new PouchDB('mydb', { adapter: 'react-native-sqlite' })
+```
+
 ## Original Cordova SQLite Bindings from Nolan Lawson
 
 https://github.com/nolanlawson/cordova-plugin-sqlite-2
