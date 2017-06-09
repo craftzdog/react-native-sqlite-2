@@ -1,6 +1,6 @@
 # React Native SQLite 2
 
-SQLite3 Native Plugin for React Native for both Android  and iOS.
+SQLite3 Native Plugin for React Native for Android/iOS/Windows.
 This plugin provides a [WebSQL](http://www.w3.org/TR/webdatabase/)-compatible API to store data in a react native app, by using a SQLite database on the native side.
 
 Inspired by fantastic work done by [Nolan Lawson](https://github.com/nolanlawson/cordova-plugin-sqlite-2).
@@ -54,6 +54,28 @@ In Xcode, add `libsqlite3.tbd` to your project's `Build Phases` ➜ `Link Binary
   	```
       compile project(':react-native-sqlite2')
   	```
+
+#### Windows  
+1. Open the solution in `Visual Studio` for your Windows apps.
+  - Right click your in the Explorer and click `Add` > `Existing Project...`.
+  - Navigate to `./<app-name>/windows/RNSqlite2/` and add `RNSqlite2.csproj`.
+  - Right click on your React Native Windows app under your solutions directory and click `Add` > `Reference...`.
+  - Check the `RNSqlite2` you just added and press `Ok`.
+2. Open `MainPage.cs` in your app
+ - Edit it like below:
+
+```
+using RNFileSystem;
+
+get
+  {
+      return new List<IReactPackage>
+      {
+          new MainReactPackage(),
+          new RNSqlite2Package(),
+      };
+  }
+```
 
 ## Usage
 
