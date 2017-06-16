@@ -108,8 +108,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RNSqlite2Module.cs" />
-    <Compile Include="RNSqlite2Package.cs" />
+    <Compile Include="..\RNSqlite2Module.cs" />
+    <Compile Include="..\RNSqlite2Package.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\node_modules\react-native-windows\ReactWindows\ReactNative\ReactNative.csproj">

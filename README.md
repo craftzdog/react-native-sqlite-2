@@ -58,14 +58,18 @@ In Xcode, add `libsqlite3.tbd` to your project's `Build Phases` ➜ `Link Binary
 #### Windows  
 1. Open the solution in `Visual Studio` for your Windows apps.
   - Right click your in the Explorer and click `Add` > `Existing Project...`.
-  - Navigate to `./<app-name>/windows/RNSqlite2/` and add `RNSqlite2.csproj`.
+  - [UWP] Navigate to `./<app-name>/windows/RNSqlite2/` and add `RNSqlite2.csproj`.
+  
+    [WPF] Navigate to `./<app-name>/windows/RNSqlite2.Net46/` and add `RNSqlite2.Net46.csproj`.
   - Right click on your React Native Windows app under your solutions directory and click `Add` > `Reference...`.
-  - Check the `RNSqlite2` you just added and press `Ok`.
+  - [UWP] Check the `RNSqlite2` you just added and press `Ok`.
+    
+    [WPF] Check the `RNSqlite2.Net46` you just added and press `Ok`.
 2. Open `MainPage.cs` in your app
  - Edit it like below:
 
 ```
-using RNFileSystem;
+using RNSqlite2;
 
 get
   {
