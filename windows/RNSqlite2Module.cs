@@ -136,6 +136,16 @@ namespace RNSqlite2
             return str.TrimStart().StartsWith("end", StringComparison.OrdinalIgnoreCase);
         }
 
+        private static bool isCommit(String str)
+        {
+            return str.TrimStart().StartsWith("commit", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool isRollback(String str)
+        {
+            return str.TrimStart().StartsWith("rollback", StringComparison.OrdinalIgnoreCase);
+        }
+
         [ReactMethod]
         public void exec(string dbName, JArray queries, bool readOnly, IPromise promise)
         {
@@ -171,11 +181,21 @@ namespace RNSqlite2
                             TRANSACTIONS[dbName] = db.BeginTransaction();
                             results[i] = EMPTY_RESULT;
                         }
-                        else if (isEnd(sql))
+                        else if (isEnd(sql) || isCommit(sql))
                         {
                             if (TRANSACTIONS[dbName] != null)
                             {
                                 TRANSACTIONS[dbName].Commit();
+                                TRANSACTIONS[dbName].Dispose();
+                                TRANSACTIONS[dbName] = null;
+                            }
+                            results[i] = EMPTY_RESULT;
+                        }
+                        else if (isRollback(sql))
+                        {
+                            if (TRANSACTIONS[dbName] != null)
+                            {
+                                TRANSACTIONS[dbName].Rollback();
                                 TRANSACTIONS[dbName].Dispose();
                                 TRANSACTIONS[dbName] = null;
                             }
@@ -407,7 +427,7 @@ namespace RNSqlite2
             catch (Exception e)
             {
                 debug("insert or update or delete error", e.Message);
-                return EMPTY_RESULT;
+                throw new Exception(e.Message);
             }
             finally
             {
