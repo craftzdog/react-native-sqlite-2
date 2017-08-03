@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
                    DESC
   s.homepage     = "https://github.com/craftzdog/react-native-sqlite-2"
   s.license      = "Apache 2.0"
-  s.author       = { "author" => "author@domain.cn" }
+  s.author       = { "author" => "hi@craftz.dog" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/craftzdog/RNSqlite2.git", :tag => "master" }
   s.source_files = "**/*.{h,m}"
@@ -16,7 +16,5 @@ Pod::Spec.new do |s|
   s.library      = "sqlite3"
 
   s.dependency "React"
-  #s.dependency "others"
-
 end
 
