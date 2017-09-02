@@ -100,6 +100,8 @@ db.transaction(function (txn) {
 });
 ```
 
+There is a test app in the [test directory](https://github.com/craftzdog/react-native-sqlite-2/tree/master/test).
+
 ### Using with PouchDB
 
 It can be used with [pouchdb-adapter-react-native-sqlite](https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite).
