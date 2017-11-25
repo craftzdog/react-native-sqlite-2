@@ -1,5 +1,5 @@
 
-package com.reactlibrary;
+package dog.craftz.sqlite_2;
 
 import java.util.Arrays;
 import java.util.Collections;

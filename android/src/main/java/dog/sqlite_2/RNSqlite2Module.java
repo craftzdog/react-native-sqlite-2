@@ -1,4 +1,4 @@
-package com.reactlibrary;
+package dog.craftz.sqlite_2;
 
 import com.facebook.react.bridge.NativeArray;
 import com.facebook.react.bridge.Promise;
