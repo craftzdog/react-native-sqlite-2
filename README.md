@@ -43,7 +43,7 @@ In Xcode, add `libsqlite3.tbd` to your project's `Build Phases` ➜ `Link Binary
 #### Android
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import com.reactlibrary.RNSqlite2Package;` to the imports at the top of the file
+  - Add `import dog.craftz.sqlite_2.RNSqlite2Package;` to the imports at the top of the file
   - Add `new RNSqlite2Package()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
