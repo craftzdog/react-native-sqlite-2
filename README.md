@@ -36,7 +36,7 @@ In Xcode, add `libsqlite3.tbd` to your project's `Build Phases` ➜ `Link Binary
 #### iOS
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-sqlite2` and add `RNSqlite2.xcodeproj`
+2. Go to `node_modules` ➜ `react-native-sqlite-2` and add `RNSqlite2.xcodeproj`
 3. In Xcode, in the project navigator, select your project. Add `libRNSqlite2.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
@@ -48,7 +48,7 @@ In Xcode, add `libsqlite3.tbd` to your project's `Build Phases` ➜ `Link Binary
 2. Append the following lines to `android/settings.gradle`:
   	```
   	include ':react-native-sqlite2'
-  	project(':react-native-sqlite2').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-sqlite2/android')
+  	project(':react-native-sqlite2').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-sqlite-2/android')
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
