@@ -7,7 +7,7 @@
 
 - (dispatch_queue_t)methodQueue
 {
-    return dispatch_get_main_queue();
+    return dispatch_queue_create("dog.craftz.sqlite2", DISPATCH_QUEUE_SERIAL);
 }
 RCT_EXPORT_MODULE()
 
@@ -86,26 +86,23 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
   NSArray *sqlResult;
   int i;
   logDebug(@"dbName: %@", dbName);
-  @synchronized(self) {
-    NSValue *databasePointer = [self openDatabase:dbName];
-    sqlite3 *db = [databasePointer pointerValue];
-    NSMutableArray *sqlResults = [NSMutableArray arrayWithCapacity:numQueries];
-    
-    // execute queries
-    for (i = 0; i < numQueries; i++) {
-      NSArray *sqlQueryObject = [sqlQueries objectAtIndex:i];
-      NSString *sql = [sqlQueryObject objectAtIndex:0];
-      NSArray *sqlArgs = [sqlQueryObject objectAtIndex:1];
-      logDebug(@"sql: %@", sql);
-      logDebug(@"sqlArgs: %@", sqlArgs);
-      sqlResult = [self executeSql:sql withSqlArgs:sqlArgs withDb: db withReadOnly: readOnly];
-      logDebug(@"sqlResult: %@", sqlResult);
-      [sqlResults addObject:sqlResult];
-    }
+  NSValue *databasePointer = [self openDatabase:dbName];
+  sqlite3 *db = [databasePointer pointerValue];
+  NSMutableArray *sqlResults = [NSMutableArray arrayWithCapacity:numQueries];
 
-    resolve(sqlResults);
+  // execute queries
+  for (i = 0; i < numQueries; i++) {
+    NSArray *sqlQueryObject = [sqlQueries objectAtIndex:i];
+    NSString *sql = [sqlQueryObject objectAtIndex:0];
+    NSArray *sqlArgs = [sqlQueryObject objectAtIndex:1];
+    logDebug(@"sql: %@", sql);
+    logDebug(@"sqlArgs: %@", sqlArgs);
+    sqlResult = [self executeSql:sql withSqlArgs:sqlArgs withDb: db withReadOnly: readOnly];
+    logDebug(@"sqlResult: %@", sqlResult);
+    [sqlResults addObject:sqlResult];
   }
-  
+
+  resolve(sqlResults);
 }
 
 -(NSObject*) getSqlValueForColumnType: (int)columnType withStatement: (sqlite3_stmt*)statement withIndex: (int)i {
