@@ -87,15 +87,15 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
       for (int i = 0; i < numQueries; i++) {
         ReadableArray sqlQuery = queries.getArray(i);
         String sql = sqlQuery.getString(0);
-        String[] bindArgs = convertParamsToStringArray(sqlQuery.getArray(1));
+        ReadableArray queryArgs = sqlQuery.getArray(1);
         try {
           if (isSelect(sql)) {
-            results[i] = doSelectInBackgroundAndPossiblyThrow(sql, bindArgs, db);
+            results[i] = doSelectInBackgroundAndPossiblyThrow(sql, queryArgs, db);
           } else { // update/insert/delete
             if (readOnly) {
               results[i] = new SQLitePLuginResult(EMPTY_ROWS, EMPTY_COLUMNS, 0, 0, new ReadOnlyException());
             } else {
-              results[i] = doUpdateInBackgroundAndPossiblyThrow(sql, bindArgs, db);
+              results[i] = doUpdateInBackgroundAndPossiblyThrow(sql, queryArgs, db);
             }
           }
         } catch (Throwable e) {
@@ -113,15 +113,45 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
   }
 
   // do a update/delete/insert operation
-  private SQLitePLuginResult doUpdateInBackgroundAndPossiblyThrow(String sql, String[] bindArgs,
+  private SQLitePLuginResult doUpdateInBackgroundAndPossiblyThrow(String sql, ReadableArray queryArgs,
                                                                   SQLiteDatabase db) {
     debug("\"run\" query: %s", sql);
     SQLiteStatement statement = null;
     try {
       statement = db.compileStatement(sql);
       debug("compiled statement");
-      if (bindArgs != null) {
-        statement.bindAllArgsAsStrings(bindArgs);
+      // Bind all of the arguments
+      for (int i = 0; i < queryArgs.size(); i++) {
+        ReadableType type = queryArgs.getType(i);
+        switch (type) {
+          case Null:
+            statement.bindNull(i + 1);
+            break;
+
+          case Boolean:
+            final long b;
+            if (queryArgs.getBoolean(i)) {
+              b = 1;
+            } else {
+              b = 0;
+            }
+            statement.bindLong(i + 1, b);
+            break;
+
+          case Number:
+            final long l = (long)queryArgs.getInt(i);
+            statement.bindLong(i + 1, l);
+            break;
+
+          case String:
+            statement.bindString(i + 1, queryArgs.getString(i));
+            break;
+
+          default:
+            // Treat all other values as a string.
+            statement.bindString(i + 1, queryArgs.getString(i));
+            break;
+        }
       }
       debug("bound args");
       if (isInsert(sql)) {
@@ -148,11 +178,12 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
   }
 
   // do a select operation
-  private SQLitePLuginResult doSelectInBackgroundAndPossiblyThrow(String sql, String[] bindArgs,
+  private SQLitePLuginResult doSelectInBackgroundAndPossiblyThrow(String sql, ReadableArray queryArgs,
                                                                   SQLiteDatabase db) {
     debug("\"all\" query: %s", sql);
     Cursor cursor = null;
     try {
+      String[] bindArgs = convertParamsToStringArray(queryArgs);
       cursor = db.rawQuery(sql, bindArgs);
       int numRows = cursor.getCount();
       if (numRows == 0) {
