@@ -68,16 +68,8 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void test(String message, Promise promise) {
-    Log.d("example", "escaped: " + message.replaceAll("\u0000", "%0000").replaceAll("\u0001", "%0001"));
-    message = unescapeBlob(message);
-    Log.d("example", "unescaped: " + message.replaceAll("\u0000", "%0000").replaceAll("\u0001", "%0001"));
-    promise.resolve(message + "\u0000" + "hoge");
-  }
-
-  @ReactMethod
   public void exec(final String dbName, final ReadableArray queries, final Boolean readOnly, final Promise promise) {
-    debug("test called: %s", dbName);
+    debug("exec called: %s", dbName);
 
     backgroundHandler.post(new Runnable() {
       @Override
