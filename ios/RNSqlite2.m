@@ -11,8 +11,11 @@
 }
 RCT_EXPORT_MODULE()
 
-- (id) init
-{
++ (BOOL)requiresMainQueueSetup {
+    return NO;
+}
+
+- (id) init {
   self = [super init];
   if (self!=nil) {
     [self pluginInitialize];
