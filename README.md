@@ -46,14 +46,14 @@ In Xcode, add `libsqlite3.tbd` to your project's `Build Phases` ➜ `Link Binary
   - Add `import dog.craftz.sqlite_2.RNSqlite2Package;` to the imports at the top of the file
   - Add `new RNSqlite2Package()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-sqlite2'
-  	project(':react-native-sqlite2').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-sqlite-2/android')
-  	```
+    ```
+    include ':react-native-sqlite-2'
+    project(':react-native-sqlite-2').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-sqlite-2/android')
+    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
-      compile project(':react-native-sqlite2')
-  	```
+    ```
+    compile project(':react-native-sqlite-2')
+    ```
 
 #### Windows  
 1. Open the solution in `Visual Studio` for your Windows apps.
