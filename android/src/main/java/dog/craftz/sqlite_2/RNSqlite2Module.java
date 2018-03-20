@@ -136,8 +136,12 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
             break;
 
           case Number:
-            final long l = (long)queryArgs.getInt(i);
-            statement.bindLong(i + 1, l);
+            // Potential edge-case
+            // This could be meant to be a floating point number
+            // or a long integer.
+            // JavaScript's Number type represents both as a single thing.
+            final double f = queryArgs.getDouble(i);
+            statement.bindDouble(i + 1, f);
             break;
 
           case String:
