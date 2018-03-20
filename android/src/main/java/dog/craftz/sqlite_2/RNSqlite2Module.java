@@ -177,7 +177,7 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
   private Object getValueFromCursor(Cursor cursor, int index, int columnType) {
     switch (columnType) {
       case Cursor.FIELD_TYPE_FLOAT:
-        return cursor.getFloat(index);
+        return cursor.getDouble(index);
       case Cursor.FIELD_TYPE_INTEGER:
         return cursor.getInt(index);
       case Cursor.FIELD_TYPE_BLOB:
