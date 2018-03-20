@@ -68,48 +68,45 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void test(String message, Promise promise) {
-    Log.d("example", "escaped: " + message.replaceAll("\u0000", "%0000").replaceAll("\u0001", "%0001"));
-    message = unescapeBlob(message);
-    Log.d("example", "unescaped: " + message.replaceAll("\u0000", "%0000").replaceAll("\u0001", "%0001"));
-    promise.resolve(message + "\u0000" + "hoge");
-  }
+  public void exec(final String dbName, final ReadableArray queries, final Boolean readOnly, final Promise promise) {
+    debug("exec called: %s", dbName);
 
-  @ReactMethod
-  public void exec(String dbName, ReadableArray queries, Boolean readOnly, Promise promise) {
-    Log.d("example", "test called: " + dbName);
-
-    try {
-      int numQueries = queries.size();
-      SQLitePLuginResult[] results = new SQLitePLuginResult[numQueries];
-      SQLiteDatabase db = getDatabase(dbName);
-
-      for (int i = 0; i < numQueries; i++) {
-        ReadableArray sqlQuery = queries.getArray(i);
-        String sql = sqlQuery.getString(0);
-        ReadableArray queryArgs = sqlQuery.getArray(1);
+    backgroundHandler.post(new Runnable() {
+      @Override
+      public void run() {
         try {
-          if (isSelect(sql)) {
-            results[i] = doSelectInBackgroundAndPossiblyThrow(sql, queryArgs, db);
-          } else { // update/insert/delete
-            if (readOnly) {
-              results[i] = new SQLitePLuginResult(EMPTY_ROWS, EMPTY_COLUMNS, 0, 0, new ReadOnlyException());
-            } else {
-              results[i] = doUpdateInBackgroundAndPossiblyThrow(sql, queryArgs, db);
+          int numQueries = queries.size();
+          SQLitePLuginResult[] results = new SQLitePLuginResult[numQueries];
+          SQLiteDatabase db = getDatabase(dbName);
+
+          for (int i = 0; i < numQueries; i++) {
+            ReadableArray sqlQuery = queries.getArray(i);
+            String sql = sqlQuery.getString(0);
+            ReadableArray queryArgs = sqlQuery.getArray(1);
+            try {
+              if (isSelect(sql)) {
+                results[i] = doSelectInBackgroundAndPossiblyThrow(sql, queryArgs, db);
+              } else { // update/insert/delete
+                if (readOnly) {
+                  results[i] = new SQLitePLuginResult(EMPTY_ROWS, EMPTY_COLUMNS, 0, 0, new ReadOnlyException());
+                } else {
+                  results[i] = doUpdateInBackgroundAndPossiblyThrow(sql, queryArgs, db);
+                }
+              }
+            } catch (Throwable e) {
+              if (DEBUG_MODE) {
+                e.printStackTrace();
+              }
+              results[i] = new SQLitePLuginResult(EMPTY_ROWS, EMPTY_COLUMNS, 0, 0, e);
             }
           }
-        } catch (Throwable e) {
-          if (DEBUG_MODE) {
-            e.printStackTrace();
-          }
-          results[i] = new SQLitePLuginResult(EMPTY_ROWS, EMPTY_COLUMNS, 0, 0, e);
+          NativeArray data = pluginResultsToPrimitiveData(results);
+          promise.resolve(data);
+        } catch (Exception e) {
+          promise.reject("SQLiteError", e);
         }
       }
-      NativeArray data = pluginResultsToPrimitiveData(results);
-      promise.resolve(data);
-    } catch (Exception e) {
-      promise.reject("SQLiteError", e);
-    }
+    });
   }
 
   // do a update/delete/insert operation
