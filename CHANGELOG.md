@@ -1,3 +1,12 @@
+## v1.6.0
+
+* perf(ios): Run query in background thread to avoid blocking UI thread
+* perf(android): Run query in background thread
+* fix(android): Handle REAL datatype correctly (Thanks @chrmod)
+* fix(android): Fix "Null" Strings in Android for INSERT and UPDATE statements. (Thanks @Ayiga)
+* fix(ios): Fix warning due to no requiresMainQueueSetup
+* docs(readme): Fix installation instruction for Android (Thanks @yairopro)
+
 ## v1.5.2
 
 * Fix a warning that the package name does not match the directory structure: `dog.craftz.sqlite_2` vs `dog/sqlite_2`.
