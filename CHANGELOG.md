@@ -1,3 +1,7 @@
+## v1.6.1
+
+* build(dependency): Update websql dependency to 1.0.0 (Thanks @p2k)
+
 ## v1.6.0
 
 * perf(ios): Run query in background thread to avoid blocking UI thread
