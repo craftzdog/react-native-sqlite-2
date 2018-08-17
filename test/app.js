@@ -3,7 +3,8 @@ import {
   StyleSheet,
   Text,
   View,
-  ListView
+  ListView,
+  SafeAreaView
 } from 'react-native'
 
 import SQLite from 'react-native-sqlite-2'
@@ -202,7 +203,7 @@ export default class ReactNativeSQLite2Test extends Component {
   render () {
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     return (
-      <View style={styles.mainContainer}>
+      <SafeAreaView style={styles.mainContainer}>
         <View style={styles.toolbar}>
           <Text style={styles.toolbarButton} onPress={() => this.runDemo()}>
             Run Demo
@@ -214,7 +215,7 @@ export default class ReactNativeSQLite2Test extends Component {
           renderRow={this.renderProgressEntry.bind(this)}
           style={listStyles.liContainer}
         />
-      </View>
+      </SafeAreaView>
     )
   }
 };
@@ -263,9 +264,10 @@ var styles = StyleSheet.create({
   },
   toolbar: {
     backgroundColor: '#51c04d',
-    paddingTop: 30,
-    paddingBottom: 10,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   toolbarButton: {
     color: 'white',
