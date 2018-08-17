@@ -1,3 +1,7 @@
+## v1.6.2
+
+* fix(android): Update build config for android
+
 ## v1.6.1
 
 * build(dependency): Update websql dependency to 1.0.0 (Thanks @p2k)
