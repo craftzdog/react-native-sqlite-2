@@ -57,7 +57,7 @@ In Xcode, add `libsqlite3.tbd` to your project's `Build Phases` ➜ `Link Binary
 
 #### Windows  
 1. Open the solution in `Visual Studio` for your Windows apps.
-  - Right click your in the Explorer and click `Add` > `Existing Project...`.
+  - Right click your solution file in the Explorer and click `Add` > `Existing Project...`.
   - [UWP] Navigate to `./<app-name>/windows/RNSqlite2/` and add `RNSqlite2.csproj`.
   
     [WPF] Navigate to `./<app-name>/windows/RNSqlite2.Net46/` and add `RNSqlite2.Net46.csproj`.
