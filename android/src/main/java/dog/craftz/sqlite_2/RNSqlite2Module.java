@@ -192,7 +192,7 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
       case Cursor.FIELD_TYPE_FLOAT:
         return cursor.getDouble(index);
       case Cursor.FIELD_TYPE_INTEGER:
-        return cursor.getInt(index);
+        return cursor.getLong(index);
       case Cursor.FIELD_TYPE_BLOB:
         // convert byte[] to binary string; it's good enough, because
         // WebSQL doesn't support blobs anyway
