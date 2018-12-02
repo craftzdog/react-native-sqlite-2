@@ -12,6 +12,7 @@
 @interface RNSqlite2 : NSObject <RCTBridgeModule>
 
 @property (nonatomic, copy) NSMutableDictionary *cachedDatabases;
+@property (nonatomic, copy) NSMutableDictionary *dbQueues;
 
 @end
   

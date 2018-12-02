@@ -4,15 +4,16 @@
 @implementation RNSqlite2
 
 @synthesize cachedDatabases;
+@synthesize dbQueues;
 
 - (dispatch_queue_t)methodQueue
 {
-    return dispatch_queue_create("dog.craftz.sqlite2", DISPATCH_QUEUE_SERIAL);
+  return dispatch_queue_create("dog.craftz.sqlite2", DISPATCH_QUEUE_SERIAL);
 }
 RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup {
-    return NO;
+  return NO;
 }
 
 - (id) init {
@@ -26,8 +27,9 @@ RCT_EXPORT_MODULE()
 -(void)pluginInitialize {
   logDebug(@"pluginInitialize()");
   cachedDatabases = [NSMutableDictionary dictionaryWithCapacity:0];
+  dbQueues = [NSMutableDictionary dictionaryWithCapacity:0];
   NSString *dbDir = [self getDatabaseDir];
-  
+
   // create "NoCloud" if it doesn't exist
   [[NSFileManager defaultManager] createDirectoryAtPath: dbDir
                             withIntermediateDirectories: NO
@@ -40,13 +42,21 @@ RCT_EXPORT_MODULE()
                   error: nil];
 }
 
+- (dispatch_queue_t)getDatabaseQueue:(NSString *)dbName {
+  dispatch_queue_t q = [dbQueues objectForKey:dbName];
+  if (q == nil) {
+    q = dispatch_queue_create([[@"dog.craftz.sqlite2." stringByAppendingString:dbName] UTF8String], DISPATCH_QUEUE_SERIAL);
+    [dbQueues setObject:q forKey:dbName];
+  }
+  return q;
+}
+
 -(NSString*) getDatabaseDir {
   NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
   return [libDir stringByAppendingPathComponent:@"NoCloud"];
 }
 
 -(id) getPathForDB:(NSString *)dbName {
-  
   // special case for in-memory databases
   if ([dbName isEqualToString:@":memory:"]) {
     return dbName;
@@ -84,28 +94,30 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
   logDebug(@"exec()");
   logDebug(@"queries: %@", sqlQueries);
   logDebug(@"readOnly: %@", readOnly ? @"true" : @"false");
+  dispatch_queue_t q = [self getDatabaseQueue:dbName];
+  dispatch_async(q, ^{
+    long numQueries = [sqlQueries count];
+    NSArray *sqlResult;
+    int i;
+    logDebug(@"dbName: %@", dbName);
+    NSValue *databasePointer = [self openDatabase:dbName];
+    sqlite3 *db = [databasePointer pointerValue];
+    NSMutableArray *sqlResults = [NSMutableArray arrayWithCapacity:numQueries];
 
-  long numQueries = [sqlQueries count];
-  NSArray *sqlResult;
-  int i;
-  logDebug(@"dbName: %@", dbName);
-  NSValue *databasePointer = [self openDatabase:dbName];
-  sqlite3 *db = [databasePointer pointerValue];
-  NSMutableArray *sqlResults = [NSMutableArray arrayWithCapacity:numQueries];
+    // execute queries
+    for (i = 0; i < numQueries; i++) {
+      NSArray *sqlQueryObject = [sqlQueries objectAtIndex:i];
+      NSString *sql = [sqlQueryObject objectAtIndex:0];
+      NSArray *sqlArgs = [sqlQueryObject objectAtIndex:1];
+      logDebug(@"sql: %@", sql);
+      logDebug(@"sqlArgs: %@", sqlArgs);
+      sqlResult = [self executeSql:sql withSqlArgs:sqlArgs withDb: db withReadOnly: readOnly];
+      logDebug(@"sqlResult: %@", sqlResult);
+      [sqlResults addObject:sqlResult];
+    }
 
-  // execute queries
-  for (i = 0; i < numQueries; i++) {
-    NSArray *sqlQueryObject = [sqlQueries objectAtIndex:i];
-    NSString *sql = [sqlQueryObject objectAtIndex:0];
-    NSArray *sqlArgs = [sqlQueryObject objectAtIndex:1];
-    logDebug(@"sql: %@", sql);
-    logDebug(@"sqlArgs: %@", sqlArgs);
-    sqlResult = [self executeSql:sql withSqlArgs:sqlArgs withDb: db withReadOnly: readOnly];
-    logDebug(@"sqlResult: %@", sqlResult);
-    [sqlResults addObject:sqlResult];
-  }
-
-  resolve(sqlResults);
+    resolve(sqlResults);
+  });
 }
 
 -(NSObject*) getSqlValueForColumnType: (int)columnType withStatement: (sqlite3_stmt*)statement withIndex: (int)i {
@@ -135,8 +147,7 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
   long insertId = 0;
   int rowsAffected = 0;
   int i;
-  
-  
+
   // compile the statement, throw an error if necessary
   logDebug(@"sqlite3_prepare_v2");
   if (sqlite3_prepare_v2(db, [sql UTF8String], -1, &statement, NULL) != SQLITE_OK) {
@@ -145,26 +156,26 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
     logDebug(@"error: %@", error);
     return @[error];
   }
-  
+
   bool queryIsReadOnly = sqlite3_stmt_readonly(statement);
   if (readOnly && !queryIsReadOnly) {
     error = [NSString stringWithFormat:@"could not prepare %@", sql];
     return @[error];
   }
-  
+
   // bind any arguments
   if (sqlArgs != nil) {
     for (i = 0; i < sqlArgs.count; i++) {
       [self bindStatement:statement withArg:[sqlArgs objectAtIndex:i] atIndex:(i + 1)];
     }
   }
-  
+
   int previousRowsAffected;
   if (!queryIsReadOnly) {
     // calculate the total changes in order to diff later
     previousRowsAffected = sqlite3_total_changes(db);
   }
-  
+
   // iterate through sql results
   int columnCount;
   NSMutableArray *columnNames = [NSMutableArray arrayWithCapacity:0];
@@ -182,7 +193,7 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
         if (!fetchedColumns) {
           // get all column names once at the beginning
           columnCount = sqlite3_column_count(statement);
-          
+
           for (i = 0; i < columnCount; i++) {
             columnName = [NSString stringWithFormat:@"%s", sqlite3_column_name(statement, i)];
             [columnNames addObject:columnName];
@@ -206,17 +217,17 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
         break;
     }
   }
-  
+
   if (!queryIsReadOnly) {
     rowsAffected = (sqlite3_total_changes(db) - previousRowsAffected);
     if (rowsAffected > 0) {
       insertId = sqlite3_last_insert_rowid(db);
     }
   }
-  
+
   logDebug(@"sqlite3_finalize");
   sqlite3_finalize (statement);
-  
+
   if (error) {
     return @[error];
   }
@@ -230,7 +241,6 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
 }
 
 -(void)bindStatement:(sqlite3_stmt *)statement withArg:(NSObject *)arg atIndex:(int)argIndex {
-  
   if ([arg isEqual:[NSNull null]]) {
     sqlite3_bind_null(statement, argIndex);
   } else if ([arg isKindOfClass:[NSNumber class]]) {
@@ -246,19 +256,23 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
     }
   } else { // NSString
     NSString *stringArg;
-    
+
     if ([arg isKindOfClass:[NSString class]]) {
       stringArg = (NSString *)arg;
     } else {
       stringArg = [arg description]; // convert to text
     }
-    
+
     NSData *data = [stringArg dataUsingEncoding:NSUTF8StringEncoding];
     sqlite3_bind_text(statement, argIndex, data.bytes, (int)data.length, SQLITE_TRANSIENT);
   }
 }
 
 -(void)dealloc {
+  [self disposeDatabaseCaches];
+}
+
+-(void)disposeDatabaseCaches {
   int i;
   NSArray *keys = [cachedDatabases allKeys];
   NSValue *pointer;
@@ -273,7 +287,6 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
 }
 
 +(NSString *)convertSQLiteErrorToString:(struct sqlite3 *)db {
-  
   int code = sqlite3_errcode(db);
   const char *cMessage = sqlite3_errmsg(db);
   NSString *message = [[NSString alloc] initWithUTF8String: cMessage];
