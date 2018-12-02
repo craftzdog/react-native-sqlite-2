@@ -37,9 +37,8 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
   private static final SQLitePLuginResult EMPTY_RESULT = new SQLitePLuginResult(EMPTY_ROWS, EMPTY_COLUMNS, 0, 0, null);
 
   private static final Map<String, SQLiteDatabase> DATABASES = new HashMap<String, SQLiteDatabase>();
+  private static final Map<String, Handler> HANDLERS = new HashMap<String, Handler>();
 
-  private final Handler writeHandler = createBackgroundHandler("WRITE");
-  private final Handler readHandler = createBackgroundHandler("READ");
   /**
    * Linked activity
    */
@@ -56,41 +55,32 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
     return "RNSqlite2";
   }
 
-  private Handler createBackgroundHandler(final String name) {
-    HandlerThread thread = new HandlerThread("SQLitePlugin BG Handler for " + name);
+  private Handler createBackgroundHandler(String name) {
+    HandlerThread thread = new HandlerThread("SQLitePlugin:" + name);
     thread.start();
     return new Handler(thread.getLooper());
+  }
+
+  private Handler getBackgroundHandler(String name) {
+    Handler handler = HANDLERS.get(name);
+    if (handler == null) {
+      handler = createBackgroundHandler(name);
+      HANDLERS.put(name, handler);
+    }
+    return handler;
   }
 
   @ReactMethod
   public void exec(final String dbName, final ReadableArray queries, final Boolean readOnly, final Promise promise) {
     debug("exec called: %s", dbName);
-    final int numQueries = queries.size();
-    boolean isAllSelectQuery = true;
-    for (int i = 0; i < numQueries; i++) {
-      ReadableArray sqlQuery = queries.getArray(i);
-      String sql = sqlQuery.getString(0);
-      if (!isSelect(sql)) {
-        isAllSelectQuery = false;
-        break;
-      }
-    }
 
-    if (isAllSelectQuery) {
-      readHandler.post(getQueryRunnable(true, dbName, queries, readOnly, promise));
-    } else {
-      writeHandler.post(getQueryRunnable(false, dbName, queries, readOnly, promise));
-    }
-  }
-
-  private Runnable getQueryRunnable(final boolean isSelectOnly, final String dbName, final ReadableArray queries, final Boolean readOnly, final Promise promise) {
-    return new Runnable() {
+    getBackgroundHandler(dbName).post(new Runnable() {
       @Override
       public void run() {
         try {
-          final int numQueries = queries.size();
+          int numQueries = queries.size();
           SQLitePLuginResult[] results = new SQLitePLuginResult[numQueries];
-          SQLiteDatabase db = getDatabase(dbName, isSelectOnly);
+          SQLiteDatabase db = getDatabase(dbName);
 
           for (int i = 0; i < numQueries; i++) {
             ReadableArray sqlQuery = queries.getArray(i);
@@ -119,7 +109,7 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
           promise.reject("SQLiteError", e);
         }
       }
-    };
+    });
   }
 
   // do a update/delete/insert operation
@@ -221,9 +211,8 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
     return null;
   }
 
-  private SQLiteDatabase getDatabase(String name, final boolean isReadOnly) {
-    final String accessTypeName = isReadOnly ? "-read" : "-write";
-    SQLiteDatabase database = DATABASES.get(name + accessTypeName);
+  private SQLiteDatabase getDatabase(String name) {
+    SQLiteDatabase database = DATABASES.get(name);
     if (database == null) {
       if (":memory:".equals(name)) {
         database = SQLiteDatabase.openOrCreateDatabase(name, null);
@@ -231,7 +220,7 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
         File file = new File(this.context.getFilesDir(), name);
         database = SQLiteDatabase.openOrCreateDatabase(file, null);
       }
-      DATABASES.put(name + accessTypeName, database);
+      DATABASES.put(name, database);
     }
     return database;
   }
