@@ -1,6 +1,6 @@
 {
   "name": "react-native-sqlite-2",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "description": "SQLite Storage for React Native",
   "main": "index.js",
   "repository": {
