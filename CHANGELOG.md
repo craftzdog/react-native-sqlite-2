@@ -1,3 +1,10 @@
+## v1.7.0
+
+* perf(ios): Make dispatch queues for each database connection
+* perf(android): Make background handlers for each database connection
+* fix(android): Fix integer overflow for SELECT result (Thanks Kudo)
+* fix(android): Fix build settings to use root project's
+
 ## v1.6.2
 
 * fix(android): Update build config for android
