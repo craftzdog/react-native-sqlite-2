@@ -42,11 +42,7 @@ function arrayifyQuery(query) {
 
 // for avoiding strings truncated with '\u0000'
 function escapeForAndroid (args) {
-  if (Platform.OS === 'android') {
-    return map(args, escapeBlob);
-  } else {
-    return args;
-  }
+  return map(args, escapeBlob);
 }
 
 function escapeBlob(data) {
