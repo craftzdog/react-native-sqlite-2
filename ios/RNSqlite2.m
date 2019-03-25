@@ -127,10 +127,12 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
     case SQLITE_FLOAT:
       return [NSNumber numberWithDouble: sqlite3_column_double(statement, i)];
     case SQLITE_BLOB:
-    case SQLITE_TEXT:
-      return [[NSString alloc] initWithBytes:(char *)sqlite3_column_text(statement, i)
-                                      length:sqlite3_column_bytes(statement, i)
-                                    encoding:NSUTF8StringEncoding];
+    case SQLITE_TEXT: {
+      NSString* value = [[NSString alloc] initWithBytes:(char *)sqlite3_column_text(statement, i)
+                                                 length:sqlite3_column_bytes(statement, i)
+                                               encoding:NSUTF8StringEncoding];
+      return [RNSqlite2 escapeBlob:value];
+    }
   }
   return [NSNull null];
 }
@@ -258,7 +260,7 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
     NSString *stringArg;
 
     if ([arg isKindOfClass:[NSString class]]) {
-      stringArg = (NSString *)arg;
+      stringArg = [RNSqlite2 unescapeBlob:(NSString *)arg];
     } else {
       stringArg = [arg description]; // convert to text
     }
@@ -291,6 +293,18 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
   const char *cMessage = sqlite3_errmsg(db);
   NSString *message = [[NSString alloc] initWithUTF8String: cMessage];
   return [NSString stringWithFormat:@"Error code %i: %@", code, message];
+}
+
++(NSString *)unescapeBlob:(NSString*)str {
+  return [[[str stringByReplacingOccurrencesOfString:@"\x01\x01" withString:@"\x00"]
+           stringByReplacingOccurrencesOfString:@"\x01\x02" withString:@"\x01"]
+          stringByReplacingOccurrencesOfString:@"\x02\x02" withString:@"\x02"];
+}
+
++(NSString *)escapeBlob:(NSString*)str {
+  return [[[str stringByReplacingOccurrencesOfString:@"\x02" withString:@"\x02\x02"]
+           stringByReplacingOccurrencesOfString:@"\x01" withString:@"\x01\x02"]
+          stringByReplacingOccurrencesOfString:@"\x00" withString:@"\x01\x01"];
 }
 
 @end
