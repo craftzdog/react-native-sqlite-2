@@ -1,3 +1,7 @@
+## v2.0.0 (beta)
+
+* Escape NULL characters to support RN0.59 [#53](https://github.com/craftzdog/react-native-sqlite-2/pull/53)
+
 ## v1.7.0
 
 * perf(ios): Make dispatch queues for each database connection
