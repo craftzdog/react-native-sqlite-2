@@ -25,7 +25,7 @@ function dearrayifyRow(res) {
   }
   var rowsAffected = res[2];
   var columns = res[3];
-  var rows = unescapeForIOS(res[4] || []);
+  var rows = unescapeForIOSAndAndroid(res[4] || []);
   var zippedRows = [];
   for (var i = 0, len = rows.length; i < len; i++) {
     zippedRows.push(zipObject(columns, rows[i]));
@@ -60,8 +60,8 @@ function escapeBlob(data) {
   }
 }
 
-function unescapeForIOS(rows) {
-  if (Platform.OS === 'ios') {
+function unescapeForIOSAndAndroid(rows) {
+  if (Platform.OS === 'android' || Platform.OS === 'ios') {
     return map(rows, function (row) {
       return map(row, unescapeBlob);
     });

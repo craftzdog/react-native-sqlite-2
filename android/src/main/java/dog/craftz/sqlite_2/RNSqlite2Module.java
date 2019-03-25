@@ -204,9 +204,10 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
       case Cursor.FIELD_TYPE_BLOB:
         // convert byte[] to binary string; it's good enough, because
         // WebSQL doesn't support blobs anyway
-        return new String(cursor.getBlob(index));
+        String value = new String(cursor.getBlob(index));
+        return escapeBlob(value);
       case Cursor.FIELD_TYPE_STRING:
-        return cursor.getString(index);
+        return escapeBlob(cursor.getString(index));
     }
     return null;
   }
@@ -354,6 +355,12 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
     return str.replaceAll("\u0001\u0001", "\u0000")
             .replaceAll("\u0001\u0002", "\u0001")
             .replaceAll("\u0002\u0002", "\u0002");
+  }
+
+  private static String escapeBlob(String str) {
+    return str.replaceAll("\u0002", "\u0002\u0002")
+            .replaceAll("\u0001", "\u0001\u0002")
+            .replaceAll("\u0000", "\u0001\u0001");
   }
 
   private static class SQLitePLuginResult {
