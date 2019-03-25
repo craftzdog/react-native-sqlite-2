@@ -1,11 +1,5 @@
 import React, { Component } from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  ListView,
-  SafeAreaView
-} from 'react-native'
+import { StyleSheet, Text, View, FlatList, SafeAreaView } from 'react-native'
 
 import SQLite from 'react-native-sqlite-2'
 
@@ -16,24 +10,28 @@ const database_size = 200000
 let db
 
 export default class ReactNativeSQLite2Test extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
-      progress: [],
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2
-      })
+      progress: [{ msg: 'Welcome', key: 'welcome' }]
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.closeDatabase()
   }
 
-  errorCB = (err) => {
-    console.log('error: ', err)
-    this.state.progress.push('Error: ' + (err.message || err))
-    this.setState(this.state)
+  addLog(msg) {
+    console.log(msg)
+    const { progress } = this.state
+    this.setState({
+      progress: [...progress, { msg, key: (+new Date()).toString() }]
+    })
+  }
+
+  errorCB = err => {
+    console.error('error:', err)
+    this.addLog('Error: ' + (err.message || err))
     return false
   }
 
@@ -42,166 +40,231 @@ export default class ReactNativeSQLite2Test extends Component {
   }
 
   openCB = () => {
-    this.state.progress.push('Database OPEN')
+    this.addLog('Database OPEN')
     this.setState(this.state)
   }
 
   closeCB = () => {
-    this.state.progress.push('Database CLOSED')
-    this.setState(this.state)
+    this.addLog('Database CLOSED')
   }
 
   deleteCB = () => {
-    console.log('Database DELETED')
-    this.state.progress.push('Database DELETED')
-    this.setState(this.state)
+    this.addLog('Database DELETED')
   }
 
-  populateDatabase (db) {
-    this.state.progress.push('Database integrity check')
-    this.setState(this.state)
-    db.transaction((txn) => {
-      txn.executeSql(
-        'SELECT 1 FROM Version LIMIT 1',
-        [],
-        () => {
-          this.state.progress.push('Database is ready ... executing query ...')
-          this.setState(this.state)
-          db.transaction(this.queryEmployees, this.errorCB, () => {
-            this.state.progress.push('Processing completed')
-            this.setState(this.state)
+  populateDatabase(db) {
+    this.addLog('Database integrity check')
+    const prepareDB = () => {
+      db.transaction(this.populateDB, this.errorCB, () => {
+        this.addLog('Database populated ... executing query ...')
+        db.transaction(this.queryEmployees, this.errorCB, () => {
+          console.log('Transaction is now finished')
+          this.addLog('Processing completed.')
+          db.transaction(this.cleanupTables, this.errorCB, () => {
+            this.closeDatabase()
           })
-        },
-        (error) => {
-          console.log('received version error:', error)
-          this.state.progress.push('Database not yet ready ... populating data')
-          this.setState(this.state)
-          db.transaction(this.populateDB, this.errorCB, () => {
-            this.state.progress.push('Database populated ... executing query ...')
-            this.setState(this.state)
-            db.transaction(this.queryEmployees, this.errorCB, () => {
-              console.log('Transaction is now finished')
-              this.state.progress.push('Processing completed')
-              this.setState(this.state)
-              this.closeDatabase()
-            })
-          })
-        }
-      )
+        })
+      })
+    }
+
+    db.transaction(txn => {
+      txn.executeSql('SELECT 1 FROM Version LIMIT 1', [], prepareDB, error => {
+        console.log('received version error:', error)
+        this.addLog('Database not yet ready ... populating data')
+        prepareDB()
+      })
     })
   }
 
-  populateDB = (tx) => {
-    this.state.progress.push('Executing DROP stmts')
-    this.setState(this.state)
+  populateDB = tx => {
+    this.addLog('Executing DROP stmts')
 
     tx.executeSql('DROP TABLE IF EXISTS Employees;')
     tx.executeSql('DROP TABLE IF EXISTS Offices;')
     tx.executeSql('DROP TABLE IF EXISTS Departments;')
 
-    this.state.progress.push('Executing CREATE stmts')
-    this.setState(this.state)
+    this.addLog('Executing CREATE stmts')
 
-    tx.executeSql('CREATE TABLE IF NOT EXISTS Version( ' +
-      'version_id INTEGER PRIMARY KEY NOT NULL); ', [], this.successCB, this.errorCB)
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS Version( ' +
+        'version_id INTEGER PRIMARY KEY NOT NULL); ',
+      [],
+      this.successCB,
+      this.errorCB
+    )
 
-    tx.executeSql('CREATE TABLE IF NOT EXISTS Departments( ' +
-      'department_id INTEGER PRIMARY KEY NOT NULL, ' +
-      'name VARCHAR(30) ); ', [], this.successCB, this.errorCB)
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS Departments( ' +
+        'department_id INTEGER PRIMARY KEY NOT NULL, ' +
+        'name VARCHAR(30) ); ',
+      [],
+      this.successCB,
+      this.errorCB
+    )
 
-    tx.executeSql('CREATE TABLE IF NOT EXISTS Offices( ' +
-      'office_id INTEGER PRIMARY KEY NOT NULL, ' +
-      'name VARCHAR(20), ' +
-      'longtitude FLOAT, ' +
-      'latitude FLOAT ) ; ', [], this.successCB, this.errorCB)
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS Offices( ' +
+        'office_id INTEGER PRIMARY KEY NOT NULL, ' +
+        'name VARCHAR(20), ' +
+        'longtitude FLOAT, ' +
+        'latitude FLOAT ) ; ',
+      [],
+      this.successCB,
+      this.errorCB
+    )
 
-    tx.executeSql('CREATE TABLE IF NOT EXISTS Employees( ' +
-      'employe_id INTEGER PRIMARY KEY NOT NULL, ' +
-      'name VARCHAR(55), ' +
-      'office INTEGER, ' +
-      'department INTEGER, ' +
-      'FOREIGN KEY ( office ) REFERENCES Offices ( office_id ) ' +
-      'FOREIGN KEY ( department ) REFERENCES Departments ( department_id ));', [])
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS Employees( ' +
+        'employe_id INTEGER PRIMARY KEY NOT NULL, ' +
+        'name VARCHAR(55), ' +
+        'office INTEGER, ' +
+        'department INTEGER, ' +
+        'FOREIGN KEY ( office ) REFERENCES Offices ( office_id ) ' +
+        'FOREIGN KEY ( department ) REFERENCES Departments ( department_id ));',
+      []
+    )
 
-    this.state.progress.push('Executing INSERT stmts')
-    this.setState(this.state)
+    this.addLog('Executing INSERT stmts')
 
-    tx.executeSql('INSERT INTO Departments (name) VALUES ("Client Services");', [])
-    tx.executeSql('INSERT INTO Departments (name) VALUES ("Investor Services");', [])
+    tx.executeSql(
+      'INSERT INTO Departments (name) VALUES ("Client Services");',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Departments (name) VALUES ("Investor Services");',
+      []
+    )
     tx.executeSql('INSERT INTO Departments (name) VALUES ("Shipping");', [])
     tx.executeSql('INSERT INTO Departments (name) VALUES ("Direct Sales");', [])
 
-    tx.executeSql('INSERT INTO Offices (name, longtitude, latitude) VALUES ("Denver", 59.8,  34.);', [])
-    tx.executeSql('INSERT INTO Offices (name, longtitude, latitude) VALUES ("Warsaw", 15.7, 54.);', [])
-    tx.executeSql('INSERT INTO Offices (name, longtitude, latitude) VALUES ("Berlin", 35.3, 12.);', [])
-    tx.executeSql('INSERT INTO Offices (name, longtitude, latitude) VALUES ("Paris", 10.7, 14.);', [])
+    tx.executeSql(
+      'INSERT INTO Offices (name, longtitude, latitude) VALUES ("Denver", 59.8,  34.);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Offices (name, longtitude, latitude) VALUES ("Warsaw", 15.7, 54.);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Offices (name, longtitude, latitude) VALUES ("Berlin", 35.3, 12.);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Offices (name, longtitude, latitude) VALUES ("Paris", 10.7, 14.);',
+      []
+    )
 
-    tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Sylvester Stallone", 2,  4);', [])
-    tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Elvis Presley", 2, 4);', [])
-    tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Leslie Nelson", 3,  4);', [])
-    tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Fidel Castro", 3, 3);', [])
-    tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Bill Clinton", 1, 3);', [])
-    tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Margaret Thatcher", 1, 3);', [])
-    tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Donald Trump", 1, 3);', [])
-    tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Dr DRE", 2, 2);', [])
-    tx.executeSql('INSERT INTO Employees (name, office, department) VALUES ("Samantha Fox", 2, 1);', [])
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES ("Sylvester Stallone", 2,  4);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES ("Elvis Presley", 2, 4);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES ("Leslie Nelson", 3,  4);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES ("Fidel Castro", 3, 3);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES ("Bill Clinton", 1, 3);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES ("Margaret Thatcher", 1, 3);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES ("Donald Trump", 1, 3);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES (?, 1, 3);',
+      ['Zero\0Null']
+    )
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES ("Dr DRE", 2, 2);',
+      []
+    )
+    tx.executeSql(
+      'INSERT INTO Employees (name, office, department) VALUES ("Samantha Fox", 2, 1);',
+      []
+    )
     console.log('all config SQL done')
   }
 
-  queryEmployees = (tx) => {
+  queryEmployees = tx => {
     console.log('Executing sql...')
-    tx.executeSql('SELECT a.name, b.name as deptName FROM Employees a, Departments b WHERE a.department = b.department_id and a.department=?', [3],
-      this.queryEmployeesSuccess, this.errorCB)
+    tx.executeSql(
+      'SELECT a.name, b.name as deptName FROM Employees a, Departments b WHERE a.department = b.department_id and a.department=?',
+      [3],
+      this.queryEmployeesSuccess,
+      this.errorCB
+    )
   }
 
   queryEmployeesSuccess = (tx, results) => {
-    this.state.progress.push('Query completed')
-    this.setState(this.state)
+    this.addLog('Query completed')
     var len = results.rows.length
     for (let i = 0; i < len; i++) {
       let row = results.rows.item(i)
-      this.state.progress.push(`Empl Name: ${row.name}, Dept Name: ${row.deptName}`)
+      this.addLog(`Empl Name: ${row.name}, Dept Name: ${row.deptName}`)
     }
-    this.setState(this.state)
   }
 
-  loadAndQueryDB () {
-    this.state.progress.push('Opening database ...')
-    this.setState(this.state)
-    db = SQLite.openDatabase(database_name, database_version, database_displayname, database_size, this.openCB, this.errorCB)
+  cleanupTables = tx => {
+    this.addLog('Executing DROP stmts')
+
+    tx.executeSql('DROP TABLE IF EXISTS Employees;')
+    tx.executeSql('DROP TABLE IF EXISTS Offices;')
+    tx.executeSql('DROP TABLE IF EXISTS Departments;')
+  }
+
+  loadAndQueryDB() {
+    this.addLog('Opening database ...')
+    db = SQLite.openDatabase(
+      database_name,
+      database_version,
+      database_displayname,
+      database_size,
+      this.openCB,
+      this.errorCB
+    )
     this.populateDatabase(db)
   }
 
-  closeDatabase () {
-    var that = this
+  closeDatabase = () => {
     if (db) {
-      console.log('Closing database ...')
-      that.state.progress.push('Closing database')
-      that.setState(that.state)
+      this.addLog('Closing database ...')
     } else {
-      that.state.progress.push('Database was not OPENED')
-      that.setState(that.state)
+      this.addLog('Database was not OPENED')
     }
   }
 
-  runDemo () {
-    this.state.progress = ['Starting SQLite Callback Demo']
-    this.setState(this.state)
+  runDemo() {
+    this.setState({
+      progress: ['Starting SQLite Callback Demo']
+    })
     this.loadAndQueryDB()
   }
 
-  renderProgressEntry (entry) {
+  renderProgressEntry = entry => {
+    const { item } = entry
     return (
       <View style={listStyles.li}>
         <View>
-          <Text style={listStyles.liText}>{entry}</Text>
+          <Text style={listStyles.liText}>{item.msg}</Text>
         </View>
       </View>
     )
   }
 
-  render () {
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+  render() {
+    const { progress } = this.state
     return (
       <SafeAreaView style={styles.mainContainer}>
         <View style={styles.toolbar}>
@@ -209,16 +272,15 @@ export default class ReactNativeSQLite2Test extends Component {
             Run Demo
           </Text>
         </View>
-        <ListView
-          enableEmptySections
-          dataSource={ds.cloneWithRows(this.state.progress)}
-          renderRow={this.renderProgressEntry.bind(this)}
+        <FlatList
+          data={progress}
+          renderItem={this.renderProgressEntry}
           style={listStyles.liContainer}
         />
       </SafeAreaView>
     )
   }
-};
+}
 
 var listStyles = StyleSheet.create({
   li: {
