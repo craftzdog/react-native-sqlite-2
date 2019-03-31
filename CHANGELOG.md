@@ -1,4 +1,8 @@
-## v2.0.0 (beta)
+## v2.0.1
+
+* Change a peer dependency on RN to `>= 0.58.0`
+
+## v2.0.0
 
 * Escape NULL characters to support RN0.59 [#53](https://github.com/craftzdog/react-native-sqlite-2/pull/53)
 
