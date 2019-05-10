@@ -79,7 +79,9 @@ RCT_EXPORT_MODULE()
       logDebug(@"cannot open database: %@", dbName); // shouldn't happen
     };
     cachedDB = [NSValue valueWithPointer:db];
-    [cachedDatabases setObject: cachedDB forKey: dbName];
+    @synchronized(cachedDatabases) {
+      [cachedDatabases setObject: cachedDB forKey: dbName];
+    }
   } else {
     logDebug(@"re-using existing db");
   }
