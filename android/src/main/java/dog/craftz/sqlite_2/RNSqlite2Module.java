@@ -48,6 +48,15 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
     super(reactContext);
     this.context = reactContext.getApplicationContext();
     this.reactContext = reactContext;
+    try {
+      Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
+      field.setAccessible(true);
+      field.set(null, 100 * 1024 * 1024); //the 100MB is the new size
+    } catch (Exception e) {
+      if (DEBUG_MODE) {
+        e.printStackTrace();
+      }
+    }
   }
 
   @Override
