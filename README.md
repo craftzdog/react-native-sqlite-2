@@ -116,6 +116,26 @@ PouchDB.plugin(SQLiteAdapter)
 var db = new PouchDB('mydb', { adapter: 'react-native-sqlite' })
 ```
 
+## Troubleshooting
+
+### Row too big to fit into CursorWindow (Android)
+
+You can set a limited `windowSizeBytes` for `CursorWindow` and try-catch the exception by adding following code to your `MainApplication.onCreate` in `MainApplication.java`:
+
+```java
+try {
+  Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
+  field.setAccessible(true);
+  field.set(null, 100 * 1024 * 1024); //the 100MB is the new size
+} catch (Exception e) {
+  if (DEBUG_MODE) {
+    e.printStackTrace();
+  }
+}
+```
+
+Note that it requires Android 9 (API level 28).
+
 ## Original Cordova SQLite Bindings from Nolan Lawson
 
 https://github.com/nolanlawson/cordova-plugin-sqlite-2
