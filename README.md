@@ -15,6 +15,10 @@ The reason for this plugin is that `react-native-sqlite-storage` has some proble
 
 This plugin avoids these problems.
 
+#### Used by
+
+<img src="https://raw.githubusercontent.com/craftzdog/react-native-sqlite-2/master/docs/firefox-logo.png" width="40" /> [mozilla / notes](https://github.com/mozilla/notes)
+
 ## Getting started
 
 ```shell
