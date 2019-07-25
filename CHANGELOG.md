@@ -1,3 +1,7 @@
+## v2.0.3 (2019-07-25)
+
+* chore(android): change 'compile' to 'implementation' [#61](https://github.com/craftzdog/react-native-sqlite-2/pull/61)
+
 ## v2.0.2 (2019-05-12)
 
 * fix(ios): Synchronize cachedDatabases to prevent SIGABRT crash when opening many databases (Thanks [@PaulMest](https://github.com/craftzdog/react-native-sqlite-2/pull/58))
