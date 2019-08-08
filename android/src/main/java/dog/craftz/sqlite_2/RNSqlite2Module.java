@@ -12,7 +12,6 @@ import com.facebook.react.bridge.WritableNativeArray;
 import android.content.Context;
 import android.util.Log;
 import android.database.Cursor;
-import androidx.sqlite.db.SupportSQLiteProgram;
 import androidx.annotation.RequiresApi;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.sqlite.db.SupportSQLiteStatement;
