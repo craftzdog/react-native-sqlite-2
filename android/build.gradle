@@ -6,7 +6,6 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.+'
-        implementation 'io.requery:sqlite-android:3.29.0'
     }
 }
 
@@ -37,4 +36,5 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
+    implementation 'io.requery:sqlite-android:3.29.0'
 }
