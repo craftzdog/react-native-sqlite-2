@@ -14,7 +14,10 @@ import android.util.Log;
 import android.database.Cursor;
 // import android.database.sqlite.SQLiteDatabase;
 import io.requery.android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+// import android.database.sqlite.SQLiteStatement;
+import io.requery.android.database.sqlite.SQLiteStatement;
+import io.requery.android.database.sqlite.SQLiteOpenHelper;
+
 import android.os.Handler;
 import android.os.HandlerThread;
 
