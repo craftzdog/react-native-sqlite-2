@@ -1,3 +1,8 @@
+## v3.0.0 (2019-09-26)
+
+- feat(android): Update to AndroidX. Make sure to enable it in your project's `android/gradle.properties`.
+- feat(android): Use [sqlite-android](https://github.com/requery/sqlite-android)
+
 ## v2.0.4 (2019-09-12)
 
 - chore(ios): move podspec file
