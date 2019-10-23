@@ -33,7 +33,7 @@ React Native SQLite 2 uses [sqlite-android](https://github.com/requery/sqlite-an
 
 ## Getting started
 
-Add react-native-webview to your dependencies:
+Add react-native-sqlite-2 to your dependencies:
 
 ```shell
 $ npm install react-native-sqlite-2 --save
