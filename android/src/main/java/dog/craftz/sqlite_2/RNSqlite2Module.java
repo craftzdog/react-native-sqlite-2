@@ -341,7 +341,7 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
         String unescaped = unescapeBlob(paramArray.getString(i));
         res[i] = unescaped;
       } else if (type == ReadableType.Boolean) {
-        res[i] = paramArray.getBoolean(i) ? "0" : "1";
+        res[i] = paramArray.getBoolean(i) ? "1" : "0";
       } else if (type == ReadableType.Null) {
         res[i] = "NULL";
       } else if (type == ReadableType.Number) {
