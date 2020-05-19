@@ -12,6 +12,18 @@
 }
 RCT_EXPORT_MODULE()
 
+- (NSDictionary *)constantsToExport
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *sharedContainerPath = [fileManager containerURLForSecurityApplicationGroupIdentifier:@"group.com.easilydo.mail"];
+    NSURL *SQLdbFolderPath = [sharedContainerPath URLByAppendingPathComponent:@"a8"];
+    NSString *path = [SQLdbFolderPath path];
+    if (![fileManager fileExistsAtPath:path]) {
+        [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return @{ @"dbPath": path};
+}
+
 + (BOOL)requiresMainQueueSetup {
   return NO;
 }
@@ -52,8 +64,18 @@ RCT_EXPORT_MODULE()
 }
 
 -(NSString*) getDatabaseDir {
-  NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
-  return [libDir stringByAppendingPathComponent:@"NoCloud"];
+    //  NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+    //  return [libDir stringByAppendingPathComponent:@"NoCloud"];
+    //
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *sharedContainerPath = [fileManager containerURLForSecurityApplicationGroupIdentifier:@"group.com.easilydo.mail"];
+    NSURL *SQLdbFolderPath = [sharedContainerPath URLByAppendingPathComponent:@"a8"];
+    NSString *path = [SQLdbFolderPath path];
+    if (![fileManager fileExistsAtPath:path]) {
+        [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return path;
 }
 
 -(id) getPathForDB:(NSString *)dbName {
@@ -174,14 +196,14 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
     }
   }
 
-  int previousRowsAffected = 0;
+  int previousRowsAffected;
   if (!queryIsReadOnly) {
     // calculate the total changes in order to diff later
     previousRowsAffected = sqlite3_total_changes(db);
   }
 
   // iterate through sql results
-  int columnCount = 0;
+  int columnCount;
   NSMutableArray *columnNames = [NSMutableArray arrayWithCapacity:0];
   NSString *columnName;
   int columnType;
