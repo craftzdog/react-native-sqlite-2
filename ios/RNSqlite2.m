@@ -12,17 +12,18 @@
 }
 RCT_EXPORT_MODULE()
 
-- (NSDictionary *)constantsToExport
-{
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *sharedContainerPath = [fileManager containerURLForSecurityApplicationGroupIdentifier:@"group.com.easilydo.mail"];
-    NSURL *SQLdbFolderPath = [sharedContainerPath URLByAppendingPathComponent:@"a8"];
-    NSString *path = [SQLdbFolderPath path];
-    if (![fileManager fileExistsAtPath:path]) {
-        [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    return @{ @"dbPath": path};
-}
+// don't do this, https://github.com/facebook/react-native/issues/24607#issuecomment-487353851
+//- (NSDictionary *)constantsToExport
+//{
+//    NSFileManager *fileManager = [NSFileManager defaultManager];
+//    NSURL *sharedContainerPath = [fileManager containerURLForSecurityApplicationGroupIdentifier:@"group.com.easilydo.mail"];
+//    NSURL *SQLdbFolderPath = [sharedContainerPath URLByAppendingPathComponent:@"a8"];
+//    NSString *path = [SQLdbFolderPath path];
+//    if (![fileManager fileExistsAtPath:path]) {
+//        [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+//    }
+//    return @{ @"A8DBPath": path};
+//}
 
 + (BOOL)requiresMainQueueSetup {
   return NO;
@@ -64,10 +65,11 @@ RCT_EXPORT_MODULE()
 }
 
 -(NSString*) getDatabaseDir {
-    //  NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
-    //  return [libDir stringByAppendingPathComponent:@"NoCloud"];
-    //
-    
+    NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+    return [libDir stringByAppendingPathComponent:@"NoCloud"];
+}
+
+-(NSString*) getSharedDatabaseDir {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *sharedContainerPath = [fileManager containerURLForSecurityApplicationGroupIdentifier:@"group.com.easilydo.mail"];
     NSURL *SQLdbFolderPath = [sharedContainerPath URLByAppendingPathComponent:@"a8"];
@@ -79,13 +81,17 @@ RCT_EXPORT_MODULE()
 }
 
 -(id) getPathForDB:(NSString *)dbName {
-  // special case for in-memory databases
-  if ([dbName isEqualToString:@":memory:"]) {
-    return dbName;
-  }
-  // otherwise use this location, which matches the old SQLite Plugin behavior
-  // and ensures no iCloud backup, which is apparently disallowed for SQLite dbs
-  return [[self getDatabaseDir] stringByAppendingPathComponent: dbName];
+    // special case for in-memory databases
+    if ([dbName isEqualToString:@":memory:"]) {
+        return dbName;
+    }
+
+    if([dbName isEqualToString:@"sifts.db"]) {
+        // otherwise use this location, which matches the old SQLite Plugin behavior
+        // and ensures no iCloud backup, which is apparently disallowed for SQLite dbs
+        return [[self getDatabaseDir] stringByAppendingPathComponent: dbName];
+    }
+    return [[self getSharedDatabaseDir] stringByAppendingPathComponent: dbName];
 }
 
 -(NSValue*)openDatabase: (NSString*)dbName {
@@ -143,6 +149,12 @@ RCT_EXPORT_METHOD(exec:(NSString *)dbName
     resolve(sqlResults);
   });
 }
+
+RCT_EXPORT_METHOD(getSharedDatabaseDir:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *dir = [self getSharedDatabaseDir];
+    resolve(dir);
+}
+
 
 -(NSObject*) getSqlValueForColumnType: (int)columnType withStatement: (sqlite3_stmt*)statement withIndex: (int)i {
   switch (columnType) {
