@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/craftzdog/react-native-sqlite-2"
   s.license      = "Apache 2.0"
   s.author       = { "author" => "hi@craftz.dog" }
-  s.platform     = :ios, "7.0"
+  s.platforms    = { :ios => "7.0", :osx => "10.14" }
   s.source       = { :git => "https://github.com/craftzdog/react-native-sqlite-2.git", :tag => "master" }
   s.source_files = "**/*.{h,m}"
   s.requires_arc = true

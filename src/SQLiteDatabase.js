@@ -1,8 +1,8 @@
 import map from 'lodash.map'
 import SQLiteResult from './SQLiteResult'
 import zipObject from 'lodash.zipobject'
-import { NativeModules, Platform } from 'react-native'
-const { RNSqlite2 } = NativeModules
+import {NativeModules, Platform} from 'react-native'
+const {RNSqlite2} = NativeModules
 
 function massageError(err) {
   return typeof err === 'string' ? new Error(err) : err
@@ -42,7 +42,11 @@ function arrayifyQuery(query) {
 
 // for avoiding strings truncated with '\u0000'
 function escapeForIOSAndAndroid(args) {
-  if (Platform.OS === 'android' || Platform.OS === 'ios') {
+  if (
+    Platform.OS === 'android' ||
+    Platform.OS === 'ios' ||
+    Platform.OS === 'macos'
+  ) {
     return map(args, escapeBlob)
   } else {
     return args
@@ -62,7 +66,7 @@ function escapeBlob(data) {
 
 function unescapeForIOSAndAndroid(rows) {
   if (Platform.OS === 'android' || Platform.OS === 'ios') {
-    return map(rows, function(row) {
+    return map(rows, function (row) {
       return map(row, unescapeBlob)
     })
   } else {
