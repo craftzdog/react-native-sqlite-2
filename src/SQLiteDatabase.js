@@ -65,8 +65,12 @@ function escapeBlob(data) {
 }
 
 function unescapeForIOSAndAndroid(rows) {
-  if (Platform.OS === 'android' || Platform.OS === 'ios') {
-    return map(rows, function (row) {
+  if (
+    Platform.OS === 'android' ||
+    Platform.OS === 'ios' ||
+    Platform.OS === 'macos'
+  ) {
+    return map(rows, function(row) {
       return map(row, unescapeBlob)
     })
   } else {
