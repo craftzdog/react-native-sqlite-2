@@ -1,8 +1,10 @@
 import map from 'lodash.map'
 import SQLiteResult from './SQLiteResult'
 import zipObject from 'lodash.zipobject'
-import {NativeModules, Platform} from 'react-native'
-const {RNSqlite2} = NativeModules
+import { NativeModules, Platform } from 'react-native'
+const { RNSqlite2 } = NativeModules
+
+const os = Platform.OS
 
 function massageError(err) {
   return typeof err === 'string' ? new Error(err) : err
@@ -25,7 +27,7 @@ function dearrayifyRow(res) {
   }
   var rowsAffected = res[2]
   var columns = res[3]
-  var rows = unescapeForIOSAndAndroid(res[4] || [])
+  var rows = unescapeMacIosAndroid(res[4] || [])
   var zippedRows = []
   for (var i = 0, len = rows.length; i < len; i++) {
     zippedRows.push(zipObject(columns, rows[i]))
@@ -37,16 +39,12 @@ function dearrayifyRow(res) {
 
 // send less data over the wire, use an array
 function arrayifyQuery(query) {
-  return [query.sql, escapeForIOSAndAndroid(query.args || [])]
+  return [query.sql, escapeMacIosAndroid(query.args || [])]
 }
 
 // for avoiding strings truncated with '\u0000'
-function escapeForIOSAndAndroid(args) {
-  if (
-    Platform.OS === 'android' ||
-    Platform.OS === 'ios' ||
-    Platform.OS === 'macos'
-  ) {
+function escapeMacIosAndroid(args) {
+  if (os === 'android' || os === 'ios' || os === 'macos') {
     return map(args, escapeBlob)
   } else {
     return args
@@ -64,12 +62,8 @@ function escapeBlob(data) {
   }
 }
 
-function unescapeForIOSAndAndroid(rows) {
-  if (
-    Platform.OS === 'android' ||
-    Platform.OS === 'ios' ||
-    Platform.OS === 'macos'
-  ) {
+function unescapeMacIosAndroid(rows) {
+  if (os === 'android' || os === 'ios' || os === 'macos') {
     return map(rows, function (row) {
       return map(row, unescapeBlob)
     })
