@@ -27,7 +27,7 @@ function dearrayifyRow(res) {
   }
   var rowsAffected = res[2]
   var columns = res[3]
-  var rows = unescapeMacIosAndroid(res[4] || [])
+  var rows = unescapeMacIOSAndroid(res[4] || [])
   var zippedRows = []
   for (var i = 0, len = rows.length; i < len; i++) {
     zippedRows.push(zipObject(columns, rows[i]))
@@ -39,11 +39,11 @@ function dearrayifyRow(res) {
 
 // send less data over the wire, use an array
 function arrayifyQuery(query) {
-  return [query.sql, escapeMacIosAndroid(query.args || [])]
+  return [query.sql, escapeMacIOSAndroid(query.args || [])]
 }
 
 // for avoiding strings truncated with '\u0000'
-function escapeMacIosAndroid(args) {
+function escapeMacIOSAndroid(args) {
   if (os === 'android' || os === 'ios' || os === 'macos') {
     return map(args, escapeBlob)
   } else {
@@ -62,7 +62,7 @@ function escapeBlob(data) {
   }
 }
 
-function unescapeMacIosAndroid(rows) {
+function unescapeMacIOSAndroid(rows) {
   if (os === 'android' || os === 'ios' || os === 'macos') {
     return map(rows, function (row) {
       return map(row, unescapeBlob)
