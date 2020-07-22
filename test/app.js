@@ -227,7 +227,11 @@ export default class ReactNativeSQLite2Test extends Component {
     var len = results.rows.length
     for (let i = 0; i < len; i++) {
       let row = results.rows.item(i)
-      this.addLog(`Empl Name: ${row.name}, Dept Name: ${row.deptName}`)
+      this.addLog(
+        `Empl Name: ${JSON.stringify(row.name)}, Dept Name: ${JSON.stringify(
+          row.deptName
+        )}`
+      )
     }
   }
 
