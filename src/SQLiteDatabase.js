@@ -1,8 +1,8 @@
 import map from 'lodash.map'
 import SQLiteResult from './SQLiteResult'
 import zipObject from 'lodash.zipobject'
-import {NativeModules, Platform} from 'react-native'
-const {RNSqlite2} = NativeModules
+import { NativeModules, Platform } from 'react-native'
+const { RNSqlite2 } = NativeModules
 
 function massageError(err) {
   return typeof err === 'string' ? new Error(err) : err
