@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, FlatList, SafeAreaView } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+  SafeAreaView
+} from 'react-native'
 
 import SQLite from 'react-native-sqlite-2'
 
@@ -13,8 +20,16 @@ export default class ReactNativeSQLite2Test extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      progress: [{ msg: 'Welcome', key: 'welcome' }]
+      progress: []
     }
+  }
+
+  componentDidMount() {
+    this.addLog(
+      typeof SQLite === 'object' && typeof SQLite.openDatabase === 'function'
+        ? 'SQLite module loaded successfully'
+        : 'Error: SQLite module is not loaded'
+    )
   }
 
   componentWillUnmount() {
@@ -267,11 +282,9 @@ export default class ReactNativeSQLite2Test extends Component {
     const { progress } = this.state
     return (
       <SafeAreaView style={styles.mainContainer}>
-        <View style={styles.toolbar}>
-          <Text style={styles.toolbarButton} onPress={() => this.runDemo()}>
-            Run Demo
-          </Text>
-        </View>
+        <TouchableOpacity style={styles.toolbar} onPress={() => this.runDemo()}>
+          <Text style={styles.toolbarButton}>Run Demo</Text>
+        </TouchableOpacity>
         <FlatList
           data={progress}
           renderItem={this.renderProgressEntry}
@@ -334,7 +347,9 @@ var styles = StyleSheet.create({
   toolbarButton: {
     color: 'white',
     textAlign: 'center',
-    flex: 1
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   mainContainer: {
     flex: 1
