@@ -1,3 +1,8 @@
+## v3.1.0 (2020-07-23)
+
+- feat(macos): Support react-native-macos (Thanks [ospfranco](https://github.com/craftzdog/react-native-sqlite-2/issues/81))
+- fix(android): boolean query arg are inversed (Thanks [jdextraze](https://github.com/craftzdog/react-native-sqlite-2/issues/74))
+
 ## v3.0.0 (2019-09-26)
 
 - feat(android): Update to AndroidX. Make sure to enable it in your project's `android/gradle.properties`.
