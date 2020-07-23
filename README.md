@@ -1,6 +1,6 @@
 # React Native SQLite 2
 
-SQLite3 Native Plugin for React Native for Android/iOS/Windows.
+SQLite3 Native Plugin for React Native for Android, iOS, Windows and macOS.
 This plugin provides a [WebSQL](http://www.w3.org/TR/webdatabase/)-compatible API to store data in a react native app, by using a SQLite database on the native side.
 
 Inspired by fantastic work done by [Nolan Lawson](https://github.com/nolanlawson/cordova-plugin-sqlite-2).
@@ -70,7 +70,7 @@ android.enableJetifier=true
 import SQLite from "react-native-sqlite-2";
 
 const db = SQLite.openDatabase("test.db", "1.0", "", 1);
-db.transaction(function(txn) {
+db.transaction(function (txn) {
   txn.executeSql("DROP TABLE IF EXISTS Users", []);
   txn.executeSql(
     "CREATE TABLE IF NOT EXISTS Users(user_id INTEGER PRIMARY KEY NOT NULL, name VARCHAR(30))",
@@ -78,7 +78,7 @@ db.transaction(function(txn) {
   );
   txn.executeSql("INSERT INTO Users (name) VALUES (:name)", ["nora"]);
   txn.executeSql("INSERT INTO Users (name) VALUES (:name)", ["takuya"]);
-  txn.executeSql("SELECT * FROM `users`", [], function(tx, res) {
+  txn.executeSql("SELECT * FROM `users`", [], function (tx, res) {
     for (let i = 0; i < res.rows.length; ++i) {
       console.log("item:", res.rows.item(i));
     }
