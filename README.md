@@ -1,4 +1,4 @@
-# React Native SQLite 2
+# <img src="./docs/cover.png" alt="React Native SQLite 2" aria-label="React Native SQLite 2" />
 
 SQLite3 Native Plugin for React Native for Android, iOS, Windows and macOS.
 This plugin provides a [WebSQL](http://www.w3.org/TR/webdatabase/)-compatible API to store data in a react native app, by using a SQLite database on the native side.
@@ -47,7 +47,7 @@ From react-native 0.60 autolinking will take care of the link step but don't for
 $ react-native link react-native-sqlite-2
 ```
 
-#### iOS
+#### iOS/macOS
 
 If using cocoapods in the `ios/` directory run
 
