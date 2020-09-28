@@ -1,3 +1,7 @@
+## v3.1.1 (2020-09-28)
+
+- fix(ios): Xcode 12 `use_frameworks` compatibility (Thanks [chrmod](https://github.com/craftzdog/react-native-sqlite-2/pull/87))
+
 ## v3.1.0 (2020-07-23)
 
 - feat(macos): Support react-native-macos (Thanks [ospfranco](https://github.com/craftzdog/react-native-sqlite-2/issues/81))
