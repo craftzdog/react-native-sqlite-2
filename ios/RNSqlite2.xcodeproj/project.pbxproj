@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F77987325482B8B00B6EDD7 /* RNSqlite2.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNSqlite2.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNSqlite2.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNSqlite2.m */; };
 /* End PBXBuildFile section */
 
@@ -20,16 +21,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7F77987525482B8B00B6EDD7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNSqlite2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNSqlite2.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F77987925482B8B00B6EDD7 /* libRNSqlite2-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libRNSqlite2-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5881CC2AC0600A0062D /* RNSqlite2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSqlite2.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNSqlite2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSqlite2.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		58B511D81A9E6C8500147676 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7F77987425482B8B00B6EDD7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -53,6 +71,7 @@
 				B3E7B5881CC2AC0600A0062D /* RNSqlite2.h */,
 				B3E7B5891CC2AC0600A0062D /* RNSqlite2.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				7F77987925482B8B00B6EDD7 /* libRNSqlite2-tvOS.a */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +95,23 @@
 			productReference = 134814201AA4EA6300B7C361 /* libRNSqlite2.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		7F77987125482B8B00B6EDD7 /* RNSqlite2-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7F77987625482B8B00B6EDD7 /* Build configuration list for PBXNativeTarget "RNSqlite2-tvOS" */;
+			buildPhases = (
+				7F77987225482B8B00B6EDD7 /* Sources */,
+				7F77987425482B8B00B6EDD7 /* Frameworks */,
+				7F77987525482B8B00B6EDD7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RNSqlite2-tvOS";
+			productName = RCTDataManager;
+			productReference = 7F77987925482B8B00B6EDD7 /* libRNSqlite2-tvOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -95,6 +131,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -103,6 +140,7 @@
 			projectRoot = "";
 			targets = (
 				58B511DA1A9E6C8500147676 /* RNSqlite2 */,
+				7F77987125482B8B00B6EDD7 /* RNSqlite2-tvOS */,
 			);
 		};
 /* End PBXProject section */
@@ -113,6 +151,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E7B58A1CC2AC0600A0062D /* RNSqlite2.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7F77987225482B8B00B6EDD7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F77987325482B8B00B6EDD7 /* RNSqlite2.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,7 +243,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-				"$(inherited)",
+					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
@@ -225,6 +271,40 @@
 			};
 			name = Release;
 		};
+		7F77987725482B8B00B6EDD7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		7F77987825482B8B00B6EDD7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -242,6 +322,15 @@
 			buildConfigurations = (
 				58B511F01A9E6C8500147676 /* Debug */,
 				58B511F11A9E6C8500147676 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7F77987625482B8B00B6EDD7 /* Build configuration list for PBXNativeTarget "RNSqlite2-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7F77987725482B8B00B6EDD7 /* Debug */,
+				7F77987825482B8B00B6EDD7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
