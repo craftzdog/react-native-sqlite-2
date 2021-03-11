@@ -221,6 +221,7 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
         File file = new File(this.context.getFilesDir(), name);
         database = SQLiteDatabase.openOrCreateDatabase(file, null);
       }
+      database.setForeignKeyConstraintsEnabled(true);
       DATABASES.put(name, database);
     }
     return database;
