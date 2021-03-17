@@ -87,7 +87,7 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
             String sql = sqlQuery.getString(0);
             ReadableArray queryArgs = sqlQuery.getArray(1);
             try {
-              if (isSelect(sql)) {
+              if (isSelectOrPragmaQuery(sql)) {
                 results[i] = doSelectInBackgroundAndPossiblyThrow(sql, queryArgs, db);
               } else { // update/insert/delete
                 if (readOnly) {
@@ -284,8 +284,10 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
     return data;
   }
 
-  private static boolean isSelect(String str) {
-    return startsWithCaseInsensitive(str, "select");
+
+  private static boolean isSelectOrPragmaQuery(String str) {
+    return startsWithCaseInsensitive(str, "select") ||
+            (startsWithCaseInsensitive(str, "pragma") && !str.contains("="));
   }
   private static boolean isInsert(String str) {
     return startsWithCaseInsensitive(str, "insert");
