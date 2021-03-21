@@ -104,24 +104,6 @@ var db = new PouchDB("mydb", { adapter: "react-native-sqlite" });
 
 ## Troubleshooting
 
-### Row too big to fit into CursorWindow (Android)
-
-You can set a limited `windowSizeBytes` for `CursorWindow` and try-catch the exception by adding following code to your `MainApplication.onCreate` in `MainApplication.java`:
-
-```java
-try {
-  Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
-  field.setAccessible(true);
-  field.set(null, 100 * 1024 * 1024); //the 100MB is the new size
-} catch (Exception e) {
-  if (DEBUG_MODE) {
-    e.printStackTrace();
-  }
-}
-```
-
-Note that it requires Android 9 (API level 28).
-
 ### Foreign key support on Android
 
 As part of database initialization, this library will enable foreign key support automatically on Android devices, due to the fact that Android will not respect a PRAGMA statement to enable or disable them after it has been opened. Thus, any tables that define foreign key constraints will have them enforced whether or not foreign key support is explicitly enabled/disabled by PRAGMA statements sent via SQL.
