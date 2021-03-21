@@ -1,3 +1,9 @@
+## v3.2.0 (2021-03-21)
+
+- feature(tvos): Support tvOS (Thanks [manbir-app-curefit](https://github.com/craftzdog/react-native-sqlite-2/pull/89))
+- fix(android): Allow PRAGMA queries (Thanks [beeks](https://github.com/craftzdog/react-native-sqlite-2/pull/91))
+- fix(android): Always enable foreign key constraints (Thanks [beeks](https://github.com/craftzdog/react-native-sqlite-2/pull/92))
+
 ## v3.1.1 (2020-09-28)
 
 - fix(ios): Xcode 12 `use_frameworks` compatibility (Thanks [chrmod](https://github.com/craftzdog/react-native-sqlite-2/pull/87))
