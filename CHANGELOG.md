@@ -1,3 +1,7 @@
+## v3.3.0 (2021-03-25)
+
+- feature(dep): Bump up websql to 2.0.0 (Thanks [technowizard ](https://github.com/craftzdog/react-native-sqlite-2/issues/93))
+
 ## v3.2.0 (2021-03-21)
 
 - feature(tvos): Support tvOS (Thanks [manbir-app-curefit](https://github.com/craftzdog/react-native-sqlite-2/pull/89))
