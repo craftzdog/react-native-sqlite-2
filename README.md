@@ -102,9 +102,9 @@ PouchDB.plugin(SQLiteAdapter);
 var db = new PouchDB("mydb", { adapter: "react-native-sqlite" });
 ```
 
-### Foreign key support on Android
+### Foreign key support
 
-As part of database initialization, this library will enable foreign key support automatically on Android devices, due to the fact that Android will not respect a PRAGMA statement to enable or disable them after it has been opened. Thus, any tables that define foreign key constraints will have them enforced whether or not foreign key support is explicitly enabled/disabled by PRAGMA statements sent via SQL.
+As part of database initialization, this library will enable foreign key support automatically on both iOS & Android. Thus, any tables that define foreign key constraints will have them enforced whether or not foreign key support is explicitly enabled/disabled by PRAGMA statements sent via SQL.
 
 ## Changelog
 

@@ -79,6 +79,7 @@ RCT_EXPORT_MODULE()
       logDebug(@"cannot open database: %@", dbName); // shouldn't happen
     };
     cachedDB = [NSValue valueWithPointer:db];
+    sqlite3_exec(db, "PRAGMA foreign_keys = ON;", NULL, NULL, NULL);
     @synchronized(cachedDatabases) {
       [cachedDatabases setObject: cachedDB forKey: dbName];
     }
