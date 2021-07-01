@@ -10,11 +10,22 @@ import {
 
 import SQLite from 'react-native-sqlite-2'
 
+function databaseName(name) {
+  return name + '.' + Math.floor(Math.random() * 100000)
+}
+
 const database_name = 'test.db'
 const database_version = '1.0'
 const database_displayname = 'SQLite Test Database'
 const database_size = 200000
 let db
+
+function exposedPromise() {
+  let resolveLoading
+  const p = new Promise((resolve) => (resolveLoading = resolve))
+  p.resolve = resolveLoading
+  return p
+}
 
 export default class ReactNativeSQLite2Test extends Component {
   constructor(props) {
@@ -67,7 +78,65 @@ export default class ReactNativeSQLite2Test extends Component {
     this.addLog('Database DELETED')
   }
 
-  populateDatabase(db) {
+  assigningPragma(db) {
+    new Promise((resolve) => {
+      let sql = "PRAGMA journal_mode = WAL"
+      db._db.exec([{sql: sql, args: []}], false, (_, result) => {
+        let journal_mode = result[0].rows[0].journal_mode
+        if (journal_mode == "wal") {
+          this.addLog("✅ " + sql)
+        } else {
+          this.addLog("❌ " + sql)
+          console.log(result, journal_mode)
+        }
+        resolve()
+      })
+    })
+  }
+
+  queryingPragma(db, isWal) {
+    new Promise((resolve) => {
+      let sql = "PRAGMA journal_mode"
+      db._db.exec([{sql: sql, args: []}], false, (_, result) => {
+        journal_mode = result[0].rows[0].journal_mode
+        // Default journal_modes differ on Android & iOS
+        if (!isWal && journal_mode != "wal" ||
+            isWal && journal_mode == "wal") {
+          this.addLog("✅ " + sql)
+        } else {
+          this.addLog("❌ " + sql)
+          console.log(result, journal_mode)
+        }
+        resolve()
+      })
+    })
+  }
+
+  buildPragmaSchema(db) {
+    new Promise((resolve) => {
+      db._db.exec([{sql: "CREATE TABLE Version(version_id INTEGER PRIMARY KEY NOT NULL);", args: []}], false, (_, result) => {
+        resolve()
+      })
+    })
+  }
+
+  assigningParenthesisPragma(db) {
+    new Promise((resolve) => {
+      let sql = "PRAGMA main.wal_checkpoint(FULL)"
+      db._db.exec([{sql: sql, args: []}], false, (_, result) => {
+        row = result[0].rows[0]
+        if (row.busy == 0 && row.checkpointed != -1 && row.log != -1) {
+          this.addLog("✅ " + sql)
+        } else {
+          this.addLog("❌ " + sql)
+          console.log(result, row)
+        }
+        resolve()
+      })
+    })
+  }
+
+  populateDatabase(db, p) {
     this.addLog('Database integrity check')
     const prepareDB = () => {
       db.transaction(this.populateDB, this.errorCB, () => {
@@ -77,6 +146,7 @@ export default class ReactNativeSQLite2Test extends Component {
           this.addLog('Processing completed.')
           db.transaction(this.cleanupTables, this.errorCB, () => {
             this.closeDatabase()
+            p.resolve()
           })
         })
       })
@@ -243,7 +313,7 @@ export default class ReactNativeSQLite2Test extends Component {
     tx.executeSql('DROP TABLE IF EXISTS Departments;')
   }
 
-  loadAndQueryDB() {
+  async loadAndQueryDB() {
     this.addLog('Opening database ...')
     db = SQLite.openDatabase(
       database_name,
@@ -253,7 +323,26 @@ export default class ReactNativeSQLite2Test extends Component {
       this.openCB,
       this.errorCB
     )
-    this.populateDatabase(db)
+    const p = exposedPromise()
+    this.populateDatabase(db, p)
+    await p
+  }
+
+  async pragmaTests() {
+    this.addLog('Open separate DB and run PRAGMA tests')
+    db = SQLite.openDatabase(
+      databaseName(database_name),
+      database_version,
+      database_displayname,
+      database_size,
+      this.openCB,
+      this.errorCB
+    )
+    await this.queryingPragma(db, false)
+    await this.assigningPragma(db)
+    await this.queryingPragma(db, true)
+    await this.buildPragmaSchema(db)
+    await this.assigningParenthesisPragma(db)
   }
 
   closeDatabase = () => {
@@ -264,11 +353,12 @@ export default class ReactNativeSQLite2Test extends Component {
     }
   }
 
-  runDemo() {
+  async runDemo() {
     this.setState({
       progress: ['Starting SQLite Callback Demo']
     })
-    this.loadAndQueryDB()
+    await this.loadAndQueryDB()
+    this.pragmaTests();
   }
 
   renderProgressEntry = entry => {
