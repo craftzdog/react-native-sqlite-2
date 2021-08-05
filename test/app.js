@@ -22,7 +22,7 @@ let db
 
 function exposedPromise() {
   let resolveLoading
-  const p = new Promise((resolve) => (resolveLoading = resolve))
+  const p = new Promise(resolve => (resolveLoading = resolve))
   p.resolve = resolveLoading
   return p
 }
@@ -79,14 +79,14 @@ export default class ReactNativeSQLite2Test extends Component {
   }
 
   assigningPragma(db) {
-    new Promise((resolve) => {
-      let sql = "PRAGMA journal_mode = WAL"
-      db._db.exec([{sql: sql, args: []}], false, (_, result) => {
+    new Promise(resolve => {
+      let sql = 'PRAGMA journal_mode = WAL'
+      db._db.exec([{ sql: sql, args: [] }], false, (_, result) => {
         let journal_mode = result[0].rows[0].journal_mode
-        if (journal_mode == "wal") {
-          this.addLog("✅ " + sql)
+        if (journal_mode == 'wal') {
+          this.addLog('✅ ' + sql)
         } else {
-          this.addLog("❌ " + sql)
+          this.addLog('❌ ' + sql)
           console.log(result, journal_mode)
         }
         resolve()
@@ -95,16 +95,18 @@ export default class ReactNativeSQLite2Test extends Component {
   }
 
   queryingPragma(db, isWal) {
-    new Promise((resolve) => {
-      let sql = "PRAGMA journal_mode"
-      db._db.exec([{sql: sql, args: []}], false, (_, result) => {
-        journal_mode = result[0].rows[0].journal_mode
+    new Promise(resolve => {
+      let sql = 'PRAGMA journal_mode'
+      db._db.exec([{ sql: sql, args: [] }], false, (_, result) => {
+        const journal_mode = result[0].rows[0].journal_mode
         // Default journal_modes differ on Android & iOS
-        if (!isWal && journal_mode != "wal" ||
-            isWal && journal_mode == "wal") {
-          this.addLog("✅ " + sql)
+        if (
+          (!isWal && journal_mode != 'wal') ||
+          (isWal && journal_mode == 'wal')
+        ) {
+          this.addLog('✅ ' + sql)
         } else {
-          this.addLog("❌ " + sql)
+          this.addLog('❌ ' + sql)
           console.log(result, journal_mode)
         }
         resolve()
@@ -113,22 +115,32 @@ export default class ReactNativeSQLite2Test extends Component {
   }
 
   buildPragmaSchema(db) {
-    new Promise((resolve) => {
-      db._db.exec([{sql: "CREATE TABLE Version(version_id INTEGER PRIMARY KEY NOT NULL);", args: []}], false, (_, result) => {
-        resolve()
-      })
+    new Promise(resolve => {
+      db._db.exec(
+        [
+          {
+            sql:
+              'CREATE TABLE Version(version_id INTEGER PRIMARY KEY NOT NULL);',
+            args: []
+          }
+        ],
+        false,
+        (_, _result) => {
+          resolve()
+        }
+      )
     })
   }
 
   assigningParenthesisPragma(db) {
-    new Promise((resolve) => {
-      let sql = "PRAGMA main.wal_checkpoint(FULL)"
-      db._db.exec([{sql: sql, args: []}], false, (_, result) => {
-        row = result[0].rows[0]
+    new Promise(resolve => {
+      let sql = 'PRAGMA main.wal_checkpoint(FULL)'
+      db._db.exec([{ sql: sql, args: [] }], false, (_, result) => {
+        const row = result[0].rows[0]
         if (row.busy == 0 && row.checkpointed != -1 && row.log != -1) {
-          this.addLog("✅ " + sql)
+          this.addLog('✅ ' + sql)
         } else {
-          this.addLog("❌ " + sql)
+          this.addLog('❌ ' + sql)
           console.log(result, row)
         }
         resolve()
@@ -358,7 +370,7 @@ export default class ReactNativeSQLite2Test extends Component {
       progress: ['Starting SQLite Callback Demo']
     })
     await this.loadAndQueryDB()
-    this.pragmaTests();
+    this.pragmaTests()
   }
 
   renderProgressEntry = entry => {
