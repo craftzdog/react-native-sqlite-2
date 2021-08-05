@@ -87,8 +87,10 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
             String sql = sqlQuery.getString(0);
             ReadableArray queryArgs = sqlQuery.getArray(1);
             try {
-              if (isSelectOrPragmaQuery(sql)) {
+              if (isSelectQuery(sql)) {
                 results[i] = doSelectInBackgroundAndPossiblyThrow(sql, queryArgs, db);
+              } else if (isPragmaQuery(sql)) {
+                results[i] = doPragmaInBackgroundAndPossiblyThrow(sql, queryArgs, db);
               } else { // update/insert/delete
                 if (readOnly) {
                   results[i] = new SQLitePLuginResult(EMPTY_ROWS, EMPTY_COLUMNS, 0, 0, new ReadOnlyException());
@@ -161,6 +163,35 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
     } finally {
       if (statement != null) {
         statement.close();
+      }
+    }
+  }
+
+  private SQLitePLuginResult doPragmaInBackgroundAndPossiblyThrow(String sql, ReadableArray queryArgs, SQLiteDatabase db) {
+    debug("\"all\" query: %s", sql);
+    Cursor cursor = null;
+    try {
+      String[] bindArgs = convertParamsToStringArray(queryArgs);
+      cursor = db.rawQuery(sql, bindArgs);
+      int numRows = cursor.getCount();
+      if (numRows == 0) {
+        return EMPTY_RESULT;
+      }
+      int numColumns = cursor.getColumnCount();
+      Object[][] rows = new Object[numRows][];
+      String[] columnNames = cursor.getColumnNames();
+      for (int i = 0; cursor.moveToNext(); i++) {
+        Object[] row = new Object[numColumns];
+        for (int j = 0; j < numColumns; j++) {
+          row[j] = getValueFromCursor(cursor, j, cursor.getType(j));
+        }
+        rows[i] = row;
+      }
+      debug("returning %d rows", numRows);
+      return new SQLitePLuginResult(rows, columnNames, 0, 0, null);
+    } finally {
+      if (cursor != null) {
+        cursor.close();
       }
     }
   }
@@ -286,9 +317,11 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
   }
 
 
-  private static boolean isSelectOrPragmaQuery(String str) {
-    return startsWithCaseInsensitive(str, "select") ||
-            (startsWithCaseInsensitive(str, "pragma") && !str.contains("="));
+  private static boolean isSelectQuery(String str) {
+    return startsWithCaseInsensitive(str, "select");
+  }
+  private static boolean isPragmaQuery(String str) {
+    return startsWithCaseInsensitive(str, "pragma");
   }
   private static boolean isInsert(String str) {
     return startsWithCaseInsensitive(str, "insert");
