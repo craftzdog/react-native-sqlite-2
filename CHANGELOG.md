@@ -1,6 +1,12 @@
+## v3.4.0 (2021-08-05)
+
+- feat(ios): Harmonize foreign key enforcing (Thanks [ilmoraunio](https://github.com/craftzdog/react-native-sqlite-2/pull/98))
+- feat(android): Allow PRAGMA statements that assign when invoked via exec (Thanks [ilmoraunio](https://github.com/craftzdog/react-native-sqlite-2/pull/99))
+- chore(dep): Bump up websql to 2.0.2
+
 ## v3.3.0 (2021-03-25)
 
-- feature(dep): Bump up websql to 2.0.0 (Thanks [technowizard ](https://github.com/craftzdog/react-native-sqlite-2/issues/93))
+- feature(dep): Bump up websql to 2.0.0 (Thanks [technowizard](https://github.com/craftzdog/react-native-sqlite-2/issues/93))
 
 ## v3.2.0 (2021-03-21)
 
