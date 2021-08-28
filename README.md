@@ -57,7 +57,7 @@ $ pod install
 
 #### Android
 
-Please make sure AndroidX is enabled in your project by editting `android/gradle.properties` and adding 2 lines:
+Please make sure AndroidX is enabled in your project by editing `android/gradle.properties` and adding 2 lines:
 
 ```
 android.useAndroidX=true
