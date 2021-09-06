@@ -9,7 +9,8 @@ It works pretty well with [PouchDB](https://github.com/stockulus/pouchdb-react-n
 
 #### Used by
 
-<img src="https://raw.githubusercontent.com/craftzdog/react-native-sqlite-2/master/docs/firefox-logo.png" width="40" /> [mozilla / notes](https://github.com/mozilla/notes)
+<img src="docs/firefox-logo.png" width="40" /> [mozilla / notes](https://github.com/mozilla/notes)
+<img src="docs/inkdrop-logo.png" width="40" /> [Inkdrop](https://www.inkdrop.app/)
 
 ## Why?
 
@@ -67,23 +68,23 @@ android.enableJetifier=true
 ## Usage
 
 ```javascript
-import SQLite from "react-native-sqlite-2";
+import SQLite from 'react-native-sqlite-2'
 
-const db = SQLite.openDatabase("test.db", "1.0", "", 1);
-db.transaction(function (txn) {
-  txn.executeSql("DROP TABLE IF EXISTS Users", []);
+const db = SQLite.openDatabase('test.db', '1.0', '', 1)
+db.transaction(function(txn) {
+  txn.executeSql('DROP TABLE IF EXISTS Users', [])
   txn.executeSql(
-    "CREATE TABLE IF NOT EXISTS Users(user_id INTEGER PRIMARY KEY NOT NULL, name VARCHAR(30))",
+    'CREATE TABLE IF NOT EXISTS Users(user_id INTEGER PRIMARY KEY NOT NULL, name VARCHAR(30))',
     []
-  );
-  txn.executeSql("INSERT INTO Users (name) VALUES (:name)", ["nora"]);
-  txn.executeSql("INSERT INTO Users (name) VALUES (:name)", ["takuya"]);
-  txn.executeSql("SELECT * FROM `users`", [], function (tx, res) {
+  )
+  txn.executeSql('INSERT INTO Users (name) VALUES (:name)', ['nora'])
+  txn.executeSql('INSERT INTO Users (name) VALUES (:name)', ['takuya'])
+  txn.executeSql('SELECT * FROM `users`', [], function(tx, res) {
     for (let i = 0; i < res.rows.length; ++i) {
-      console.log("item:", res.rows.item(i));
+      console.log('item:', res.rows.item(i))
     }
-  });
-});
+  })
+})
 ```
 
 There is a test app in the [test directory](https://github.com/craftzdog/react-native-sqlite-2/tree/master/test).
@@ -93,13 +94,13 @@ There is a test app in the [test directory](https://github.com/craftzdog/react-n
 It can be used with [pouchdb-adapter-react-native-sqlite](https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite).
 
 ```javascript
-import PouchDB from "pouchdb-react-native";
-import SQLite from "react-native-sqlite-2";
-import SQLiteAdapterFactory from "pouchdb-adapter-react-native-sqlite";
+import PouchDB from 'pouchdb-react-native'
+import SQLite from 'react-native-sqlite-2'
+import SQLiteAdapterFactory from 'pouchdb-adapter-react-native-sqlite'
 
-const SQLiteAdapter = SQLiteAdapterFactory(SQLite);
-PouchDB.plugin(SQLiteAdapter);
-var db = new PouchDB("mydb", { adapter: "react-native-sqlite" });
+const SQLiteAdapter = SQLiteAdapterFactory(SQLite)
+PouchDB.plugin(SQLiteAdapter)
+var db = new PouchDB('mydb', { adapter: 'react-native-sqlite' })
 ```
 
 ### Foreign key support
