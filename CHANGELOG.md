@@ -1,3 +1,7 @@
+## v3.4.1 (2021-09-06)
+
+- chore(dep): update websql to 2.0.3 (Thanks [DerGuteMoritz](https://github.com/craftzdog/react-native-sqlite-2/pull/103))
+
 ## v3.4.0 (2021-08-05)
 
 - feat(ios): Harmonize foreign key enforcing (Thanks [ilmoraunio](https://github.com/craftzdog/react-native-sqlite-2/pull/98))
