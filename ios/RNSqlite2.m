@@ -53,7 +53,7 @@ RCT_EXPORT_MODULE()
 
 -(NSString*) getDatabaseDir {
   NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
-  return [libDir stringByAppendingPathComponent:@"NoCloud"];
+  return libDir
 }
 
 -(id) getPathForDB:(NSString *)dbName {
