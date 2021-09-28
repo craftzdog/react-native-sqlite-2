@@ -53,6 +53,9 @@ RCT_EXPORT_MODULE()
 
 -(NSString*) getDatabaseDir {
   NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+  NSLog(@"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+  NSLog(@"%@", libDir);
+  NSLog(@"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   return libDir
 }
 
