@@ -52,11 +52,10 @@ RCT_EXPORT_MODULE()
 }
 
 -(NSString*) getDatabaseDir {
-  NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
-  NSLog(@"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-  NSLog(@"%@", libDir);
-  NSLog(@"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-    return libDir;
+  NSString *appSupportDir = nil;
+  appSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+  NSString *appBundleID = [[NSBundle mainBundle] bundleIdentifier];
+  return [appSupportDir URLByAppendingPathComponent:appBundleID];
 }
 
 -(id) getPathForDB:(NSString *)dbName {
