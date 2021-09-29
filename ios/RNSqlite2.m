@@ -30,16 +30,11 @@ RCT_EXPORT_MODULE()
   dbQueues = [NSMutableDictionary dictionaryWithCapacity:0];
   NSString *dbDir = [self getDatabaseDir];
 
-  // create "NoCloud" if it doesn't exist
+  // create storage directory if it doesn't exist
   [[NSFileManager defaultManager] createDirectoryAtPath: dbDir
                             withIntermediateDirectories: NO
                                              attributes: nil
                                                   error: nil];
-  // make it non-syncable to iCloud
-  NSURL *url = [ NSURL fileURLWithPath: dbDir];
-  [url setResourceValue: [NSNumber numberWithBool: YES]
-                 forKey: NSURLIsExcludedFromBackupKey
-                  error: nil];
 }
 
 - (dispatch_queue_t)getDatabaseQueue:(NSString *)dbName {
