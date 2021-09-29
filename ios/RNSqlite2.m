@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE()
   logDebug(@"pluginInitialize()");
   cachedDatabases = [NSMutableDictionary dictionaryWithCapacity:0];
   dbQueues = [NSMutableDictionary dictionaryWithCapacity:0];
-  NSString *dbDir = [self getDatabaseDir];
+  NSURL *dbDir = [self getDatabaseDir];
 
   // create storage directory if it doesn't exist
   [[NSFileManager defaultManager] createDirectoryAtPath: dbDir
@@ -46,8 +46,8 @@ RCT_EXPORT_MODULE()
   return q;
 }
 
--(NSString*) getDatabaseDir {
-  NSString *appSupportDir = nil;
+-(NSURL*) getDatabaseDir {
+  NSURL *appSupportDir = nil;
   appSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
   NSString *appBundleID = [[NSBundle mainBundle] bundleIdentifier];
   return [appSupportDir URLByAppendingPathComponent:appBundleID];
