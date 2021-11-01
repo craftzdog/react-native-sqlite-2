@@ -11,11 +11,11 @@ cd SQLite2Test
 3. Change `index.ios.js` and `index.android.js` to:
 
 ```javascript
-import React, { Component } from "react";
-import { AppRegistry } from "react-native";
-import App from "react-native-sqlite-2/test/app";
+import React, { Component } from 'react'
+import { AppRegistry } from 'react-native'
+import App from 'react-native-sqlite-2/test/app'
 
-AppRegistry.registerComponent("SQLite2Test", () => App);
+AppRegistry.registerComponent('SQLite2Test', () => App)
 ```
 
 4. Run it. You should see the result like so:
