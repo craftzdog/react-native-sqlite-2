@@ -1,3 +1,8 @@
+## v3.5.0 (2021-11-01)
+
+- chore(android): update sqlite-android to 3.36.0 (Thanks [@matinzd](https://github.com/craftzdog/react-native-sqlite-2/pull/104))
+- chore(android): update sqlite to 2.1.0
+
 ## v3.4.1 (2021-09-06)
 
 - chore(dep): update websql to 2.0.3 (Thanks [DerGuteMoritz](https://github.com/craftzdog/react-native-sqlite-2/pull/103))
