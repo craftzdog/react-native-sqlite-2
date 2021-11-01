@@ -21,3 +21,7 @@ AppRegistry.registerComponent("SQLite2Test", () => App);
 4. Run it. You should see the result like so:
 
 ![Screen shot](./screenshot.png)
+
+## Quick test
+
+Check out [my demo project](https://github.com/craftzdog/react-native-sqlite-2-demo)
