@@ -18,7 +18,8 @@
     "react-native",
     "pouchdb"
   ],
-  "author": "Takuya Matsuyama <hi@craftz.dog>",
+  "author": "Takuya Matsuyama <hi@craftz.dog> (https://github.com/craftzdog)",
+  "homepage": "https://github.com/craftzdog/react-native-sqlite-2#readme",
   "license": "Apache-2.0",
   "peerDependencies": {
     "react-native": ">= 0.60.0"
@@ -29,10 +30,31 @@
     "websql": "^2.0.3"
   },
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
+    "@react-native-community/eslint-config": "^3.0.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.25.1",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "react-native": "0.66.4"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@react-native-community",
+      "prettier"
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
+  "prettier": {
+    "arrowParens": "avoid",
+    "singleQuote": true,
+    "bracketSpacing": true,
+    "endOfLine": "lf",
+    "semi": false,
+    "tabWidth": 2,
+    "trailingComma": "none"
   }
 }
