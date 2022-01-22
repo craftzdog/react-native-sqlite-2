@@ -1,13 +1,13 @@
-
 buildscript {
-    repositories {
-        mavenCentral()
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+    if (project == rootProject) {
+        repositories {
+            mavenCentral()
+            google()
+            jcenter()
+        }
+        dependencies {
+            classpath 'com.android.tools.build:gradle:3.2.1'
+        }
     }
 }
 
