@@ -39,6 +39,6 @@ repositories {
 
 dependencies {
   implementation 'com.facebook.react:react-native:+'
-  api 'androidx.sqlite:sqlite:2.1.0'
+  api 'androidx.sqlite:sqlite:2.2.0'
   implementation 'com.github.requery:sqlite-android:3.36.0'
 }
