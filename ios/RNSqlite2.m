@@ -10,6 +10,7 @@
 {
   return dispatch_queue_create("dog.craftz.sqlite2", DISPATCH_QUEUE_SERIAL);
 }
+
 RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup {
