@@ -34,11 +34,13 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "pouchdb",
+    "sqlite"
   ],
   "repository": "https://github.com/craftzdog/react-native-sqlite-2",
   "author": "Takuya Matsuyama <hi@craftz.dog> (https://github.com/craftzdog)",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/craftzdog/react-native-sqlite-2/issues"
   },
