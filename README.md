@@ -87,7 +87,7 @@ db.transaction(function(txn) {
 })
 ```
 
-There is a test app in the [test directory](https://github.com/craftzdog/react-native-sqlite-2/tree/master/test).
+See [an example project](/example/) for more detail.
 
 ### Using with PouchDB
 
@@ -110,6 +110,10 @@ As part of database initialization, this library will enable foreign key support
 ## Changelog
 
 See [CHANGELOG.md](./CHANGELOG.md)
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Original Cordova SQLite Bindings from Nolan Lawson
 
