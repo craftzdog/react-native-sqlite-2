@@ -1,5 +1,7 @@
 package dog.craftz.sqlite_2;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.NativeArray;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -8,6 +10,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.module.annotations.ReactModule;
 
 import android.content.Context;
 import android.util.Log;
@@ -24,7 +27,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+@ReactModule(name = RNSqlite2Module.NAME)
 public class RNSqlite2Module extends ReactContextBaseJavaModule {
+  public static final String NAME = "RNSqlite2";
 
   private final ReactApplicationContext reactContext;
 
@@ -51,8 +56,9 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
   }
 
   @Override
+  @NonNull
   public String getName() {
-    return "RNSqlite2";
+    return NAME;
   }
 
   private Handler createBackgroundHandler(String name) {

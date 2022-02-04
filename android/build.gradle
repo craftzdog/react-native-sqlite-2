@@ -1,10 +1,11 @@
 buildscript {
   if (project == rootProject) {
     repositories {
-      mavenCentral()
       google()
       jcenter()
+      mavenCentral()
     }
+
     dependencies {
       classpath 'com.android.tools.build:gradle:4.2.2'
     }
@@ -27,22 +28,40 @@ android {
   ndkVersion getExtOrDefault('ndkVersion')
 
   defaultConfig {
-    minSdkVersion 16
-    targetSdkVersion rootProject.hasProperty('targetSdkVersion') ? rootProject.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
+    minSdkVersion 21
+    targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
     versionCode 1
     versionName "1.6.2"
   }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
   lintOptions {
-    abortOnError false
+    disable 'GradleCompatible'
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
   }
 }
 
 repositories {
-  mavenCentral()
+  mavenLocal()
+    maven {
+      // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+      url("$rootDir/../node_modules/react-native/android")
+    }
+  google()
+    mavenCentral()
+    jcenter()
 }
 
 dependencies {
-  implementation 'com.facebook.react:react-native:+'
+  //noinspection GradleDynamicVersion
+  implementation "com.facebook.react:react-native:+"  // From node_modules
   api 'androidx.sqlite:sqlite:2.1.0'
   implementation 'com.github.requery:sqlite-android:3.36.0'
 }
