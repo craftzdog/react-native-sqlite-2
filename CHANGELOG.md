@@ -1,3 +1,37 @@
+## v3.5.0 (2021-11-01)
+
+- chore(android): update sqlite-android to 3.36.0 (Thanks [@matinzd](https://github.com/craftzdog/react-native-sqlite-2/pull/104))
+- chore(android): update sqlite to 2.1.0
+
+## v3.4.1 (2021-09-06)
+
+- chore(dep): update websql to 2.0.3 (Thanks [DerGuteMoritz](https://github.com/craftzdog/react-native-sqlite-2/pull/103))
+
+## v3.4.0 (2021-08-05)
+
+- feat(ios): Harmonize foreign key enforcing (Thanks [ilmoraunio](https://github.com/craftzdog/react-native-sqlite-2/pull/98))
+- feat(android): Allow PRAGMA statements that assign when invoked via exec (Thanks [ilmoraunio](https://github.com/craftzdog/react-native-sqlite-2/pull/99))
+- chore(dep): Bump up websql to 2.0.2
+
+## v3.3.0 (2021-03-25)
+
+- feature(dep): Bump up websql to 2.0.0 (Thanks [technowizard](https://github.com/craftzdog/react-native-sqlite-2/issues/93))
+
+## v3.2.0 (2021-03-21)
+
+- feature(tvos): Support tvOS (Thanks [manbir-app-curefit](https://github.com/craftzdog/react-native-sqlite-2/pull/89))
+- fix(android): Allow PRAGMA queries (Thanks [beeks](https://github.com/craftzdog/react-native-sqlite-2/pull/91))
+- fix(android): Always enable foreign key constraints (Thanks [beeks](https://github.com/craftzdog/react-native-sqlite-2/pull/92))
+
+## v3.1.1 (2020-09-28)
+
+- fix(ios): Xcode 12 `use_frameworks` compatibility (Thanks [chrmod](https://github.com/craftzdog/react-native-sqlite-2/pull/87))
+
+## v3.1.0 (2020-07-23)
+
+- feat(macos): Support react-native-macos (Thanks [ospfranco](https://github.com/craftzdog/react-native-sqlite-2/issues/81))
+- fix(android): boolean query arg are inversed (Thanks [jdextraze](https://github.com/craftzdog/react-native-sqlite-2/issues/74))
+
 ## v3.0.0 (2019-09-26)
 
 - feat(android): Update to AndroidX. Make sure to enable it in your project's `android/gradle.properties`.

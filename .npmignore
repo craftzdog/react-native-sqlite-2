@@ -1,4 +1,5 @@
 example
+docs/
 
 # OSX
 #
@@ -39,6 +40,7 @@ build/
 .gradle
 local.properties
 *.iml
+android/build
 
 # BUCK
 buck-out/
