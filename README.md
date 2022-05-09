@@ -9,7 +9,8 @@ It works pretty well with [PouchDB](https://github.com/stockulus/pouchdb-react-n
 
 #### Used by
 
-<img src="https://raw.githubusercontent.com/craftzdog/react-native-sqlite-2/master/docs/firefox-logo.png" width="40" /> [mozilla / notes](https://github.com/mozilla/notes)
+<img src="docs/firefox-logo.png" width="40" /> [mozilla / notes](https://github.com/mozilla/notes)
+<img src="docs/inkdrop-logo.png" width="40" /> [Inkdrop](https://www.inkdrop.app/)
 
 ## Why?
 
@@ -57,7 +58,7 @@ $ pod install
 
 #### Android
 
-Please make sure AndroidX is enabled in your project by editting `android/gradle.properties` and adding 2 lines:
+Please make sure AndroidX is enabled in your project by editing `android/gradle.properties` and adding 2 lines:
 
 ```
 android.useAndroidX=true
@@ -67,64 +68,52 @@ android.enableJetifier=true
 ## Usage
 
 ```javascript
-import SQLite from "react-native-sqlite-2";
+import SQLite from 'react-native-sqlite-2'
 
-const db = SQLite.openDatabase("test.db", "1.0", "", 1);
-db.transaction(function (txn) {
-  txn.executeSql("DROP TABLE IF EXISTS Users", []);
+const db = SQLite.openDatabase('test.db', '1.0', '', 1)
+db.transaction(function(txn) {
+  txn.executeSql('DROP TABLE IF EXISTS Users', [])
   txn.executeSql(
-    "CREATE TABLE IF NOT EXISTS Users(user_id INTEGER PRIMARY KEY NOT NULL, name VARCHAR(30))",
+    'CREATE TABLE IF NOT EXISTS Users(user_id INTEGER PRIMARY KEY NOT NULL, name VARCHAR(30))',
     []
-  );
-  txn.executeSql("INSERT INTO Users (name) VALUES (:name)", ["nora"]);
-  txn.executeSql("INSERT INTO Users (name) VALUES (:name)", ["takuya"]);
-  txn.executeSql("SELECT * FROM `users`", [], function (tx, res) {
+  )
+  txn.executeSql('INSERT INTO Users (name) VALUES (:name)', ['nora'])
+  txn.executeSql('INSERT INTO Users (name) VALUES (:name)', ['takuya'])
+  txn.executeSql('SELECT * FROM `users`', [], function(tx, res) {
     for (let i = 0; i < res.rows.length; ++i) {
-      console.log("item:", res.rows.item(i));
+      console.log('item:', res.rows.item(i))
     }
-  });
-});
+  })
+})
 ```
 
-There is a test app in the [test directory](https://github.com/craftzdog/react-native-sqlite-2/tree/master/test).
+See [an example project](/example/) for more detail.
 
 ### Using with PouchDB
 
 It can be used with [pouchdb-adapter-react-native-sqlite](https://github.com/craftzdog/pouchdb-adapter-react-native-sqlite).
 
 ```javascript
-import PouchDB from "pouchdb-react-native";
-import SQLite from "react-native-sqlite-2";
-import SQLiteAdapterFactory from "pouchdb-adapter-react-native-sqlite";
+import PouchDB from 'pouchdb-react-native'
+import SQLite from 'react-native-sqlite-2'
+import SQLiteAdapterFactory from 'pouchdb-adapter-react-native-sqlite'
 
-const SQLiteAdapter = SQLiteAdapterFactory(SQLite);
-PouchDB.plugin(SQLiteAdapter);
-var db = new PouchDB("mydb", { adapter: "react-native-sqlite" });
+const SQLiteAdapter = SQLiteAdapterFactory(SQLite)
+PouchDB.plugin(SQLiteAdapter)
+var db = new PouchDB('mydb', { adapter: 'react-native-sqlite' })
 ```
 
-## Troubleshooting
+### Foreign key support
 
-### Row too big to fit into CursorWindow (Android)
-
-You can set a limited `windowSizeBytes` for `CursorWindow` and try-catch the exception by adding following code to your `MainApplication.onCreate` in `MainApplication.java`:
-
-```java
-try {
-  Field field = CursorWindow.class.getDeclaredField("sCursorWindowSize");
-  field.setAccessible(true);
-  field.set(null, 100 * 1024 * 1024); //the 100MB is the new size
-} catch (Exception e) {
-  if (DEBUG_MODE) {
-    e.printStackTrace();
-  }
-}
-```
-
-Note that it requires Android 9 (API level 28).
+As part of database initialization, this library will enable foreign key support automatically on both iOS & Android. Thus, any tables that define foreign key constraints will have them enforced whether or not foreign key support is explicitly enabled/disabled by PRAGMA statements sent via SQL.
 
 ## Changelog
 
 See [CHANGELOG.md](./CHANGELOG.md)
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Original Cordova SQLite Bindings from Nolan Lawson
 

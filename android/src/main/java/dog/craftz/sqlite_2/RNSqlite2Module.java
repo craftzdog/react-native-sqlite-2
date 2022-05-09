@@ -1,5 +1,7 @@
 package dog.craftz.sqlite_2;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.NativeArray;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -8,6 +10,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.module.annotations.ReactModule;
 
 import android.content.Context;
 import android.util.Log;
@@ -24,7 +27,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+@ReactModule(name = RNSqlite2Module.NAME)
 public class RNSqlite2Module extends ReactContextBaseJavaModule {
+  public static final String NAME = "RNSqlite2";
 
   private final ReactApplicationContext reactContext;
 
@@ -51,8 +56,9 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
   }
 
   @Override
+  @NonNull
   public String getName() {
-    return "RNSqlite2";
+    return NAME;
   }
 
   private Handler createBackgroundHandler(String name) {
@@ -87,8 +93,10 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
             String sql = sqlQuery.getString(0);
             ReadableArray queryArgs = sqlQuery.getArray(1);
             try {
-              if (isSelect(sql)) {
+              if (isSelectQuery(sql)) {
                 results[i] = doSelectInBackgroundAndPossiblyThrow(sql, queryArgs, db);
+              } else if (isPragmaQuery(sql)) {
+                results[i] = doPragmaInBackgroundAndPossiblyThrow(sql, queryArgs, db);
               } else { // update/insert/delete
                 if (readOnly) {
                   results[i] = new SQLitePLuginResult(EMPTY_ROWS, EMPTY_COLUMNS, 0, 0, new ReadOnlyException());
@@ -165,6 +173,35 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
     }
   }
 
+  private SQLitePLuginResult doPragmaInBackgroundAndPossiblyThrow(String sql, ReadableArray queryArgs, SQLiteDatabase db) {
+    debug("\"all\" query: %s", sql);
+    Cursor cursor = null;
+    try {
+      String[] bindArgs = convertParamsToStringArray(queryArgs);
+      cursor = db.rawQuery(sql, bindArgs);
+      int numRows = cursor.getCount();
+      if (numRows == 0) {
+        return EMPTY_RESULT;
+      }
+      int numColumns = cursor.getColumnCount();
+      Object[][] rows = new Object[numRows][];
+      String[] columnNames = cursor.getColumnNames();
+      for (int i = 0; cursor.moveToNext(); i++) {
+        Object[] row = new Object[numColumns];
+        for (int j = 0; j < numColumns; j++) {
+          row[j] = getValueFromCursor(cursor, j, cursor.getType(j));
+        }
+        rows[i] = row;
+      }
+      debug("returning %d rows", numRows);
+      return new SQLitePLuginResult(rows, columnNames, 0, 0, null);
+    } finally {
+      if (cursor != null) {
+        cursor.close();
+      }
+    }
+  }
+
   // do a select operation
   private SQLitePLuginResult doSelectInBackgroundAndPossiblyThrow(String sql, ReadableArray queryArgs, SQLiteDatabase db) {
     debug("\"all\" query: %s", sql);
@@ -221,6 +258,7 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
         File file = new File(this.context.getFilesDir(), name);
         database = SQLiteDatabase.openOrCreateDatabase(file, null);
       }
+      database.setForeignKeyConstraintsEnabled(true);
       DATABASES.put(name, database);
     }
     return database;
@@ -284,8 +322,12 @@ public class RNSqlite2Module extends ReactContextBaseJavaModule {
     return data;
   }
 
-  private static boolean isSelect(String str) {
+
+  private static boolean isSelectQuery(String str) {
     return startsWithCaseInsensitive(str, "select");
+  }
+  private static boolean isPragmaQuery(String str) {
+    return startsWithCaseInsensitive(str, "pragma");
   }
   private static boolean isInsert(String str) {
     return startsWithCaseInsensitive(str, "insert");

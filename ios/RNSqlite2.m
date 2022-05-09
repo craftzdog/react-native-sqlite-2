@@ -10,6 +10,7 @@
 {
   return dispatch_queue_create("dog.craftz.sqlite2", DISPATCH_QUEUE_SERIAL);
 }
+
 RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup {
@@ -79,6 +80,7 @@ RCT_EXPORT_MODULE()
       logDebug(@"cannot open database: %@", dbName); // shouldn't happen
     };
     cachedDB = [NSValue valueWithPointer:db];
+    sqlite3_exec(db, "PRAGMA foreign_keys = ON;", NULL, NULL, NULL);
     @synchronized(cachedDatabases) {
       [cachedDatabases setObject: cachedDB forKey: dbName];
     }
