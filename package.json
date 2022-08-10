@@ -1,6 +1,6 @@
 {
   "name": "react-native-sqlite-2",
-  "version": "3.6.0-beta.1",
+  "version": "3.6.0-beta.2",
   "description": "SQLite3 Native Plugin for React Native for iOS, Android, Windows and macOS",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
