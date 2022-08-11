@@ -1,3 +1,7 @@
+## v3.6.1 (2022-08-11)
+
+* Windows files are missing
+
 ## v3.6.0 (2022-08-11)
 
 * TypeScript support
