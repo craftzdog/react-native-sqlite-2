@@ -1,3 +1,9 @@
+## v3.6.0 (2022-08-11)
+
+* TypeScript support
+* Add an example project
+* Add Husky
+
 ## v3.5.0 (2021-11-01)
 
 - chore(android): update sqlite-android to 3.36.0 (Thanks [@matinzd](https://github.com/craftzdog/react-native-sqlite-2/pull/104))
