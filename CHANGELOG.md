@@ -1,12 +1,16 @@
+## v3.6.2 (2022-11-01)
+
+- chore(android): remove jCenter in gradle build files (Thanks [@obdulia-losantos](https://github.com/craftzdog/react-native-sqlite-2/pull/138))
+
 ## v3.6.1 (2022-08-11)
 
-* Windows files are missing
+- Windows files are missing
 
 ## v3.6.0 (2022-08-11)
 
-* TypeScript support
-* Add an example project
-* Add Husky
+- TypeScript support
+- Add an example project
+- Add Husky
 
 ## v3.5.0 (2021-11-01)
 
