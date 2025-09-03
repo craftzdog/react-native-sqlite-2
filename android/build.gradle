@@ -62,6 +62,6 @@ repositories {
 dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"  // From node_modules
-  api 'androidx.sqlite:sqlite:2.1.0'
-  implementation 'com.github.requery:sqlite-android:3.36.0'
+  api 'androidx.sqlite:sqlite:2.5.2'
+  implementation 'com.github.requery:sqlite-android:3.49.0'
 }
