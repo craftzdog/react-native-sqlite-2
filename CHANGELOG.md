@@ -1,3 +1,7 @@
+## v3.6.3 (2025-12-17)
+
+- fix(android): Patch sqlite lib for 16 KB page size support (Thanks [@mendesbarreto](https://github.com/craftzdog/react-native-sqlite-2/pull/152))
+
 ## v3.6.2 (2022-11-01)
 
 - chore(android): remove jCenter in gradle build files (Thanks [@obdulia-losantos](https://github.com/craftzdog/react-native-sqlite-2/pull/138))
