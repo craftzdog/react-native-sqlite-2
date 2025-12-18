@@ -31,16 +31,11 @@ RCT_EXPORT_MODULE()
   dbQueues = [NSMutableDictionary dictionaryWithCapacity:0];
   NSString *dbDir = [self getDatabaseDir];
 
-  // create "NoCloud" if it doesn't exist
+  // create storage directory if it doesn't exist
   [[NSFileManager defaultManager] createDirectoryAtPath: dbDir
                             withIntermediateDirectories: NO
                                              attributes: nil
                                                   error: nil];
-  // make it non-syncable to iCloud
-  NSURL *url = [ NSURL fileURLWithPath: dbDir];
-  [url setResourceValue: [NSNumber numberWithBool: YES]
-                 forKey: NSURLIsExcludedFromBackupKey
-                  error: nil];
 }
 
 - (dispatch_queue_t)getDatabaseQueue:(NSString *)dbName {
@@ -53,8 +48,10 @@ RCT_EXPORT_MODULE()
 }
 
 -(NSString*) getDatabaseDir {
-  NSString *libDir = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
-  return [libDir stringByAppendingPathComponent:@"NoCloud"];
+  NSString *appSupportDir = nil;
+  appSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+  NSString *appBundleID = [[NSBundle mainBundle] bundleIdentifier];
+  return [NSString stringWithFormat:@"%@/%@", appSupportDir, appBundleID];
 }
 
 -(id) getPathForDB:(NSString *)dbName {
